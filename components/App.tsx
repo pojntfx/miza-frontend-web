@@ -14,7 +14,10 @@ import {
   Toolbar,
   IconButton,
   Fab,
+  ThemeProvider,
+  createMuiTheme,
 } from "@material-ui/core";
+import { orange, blue } from "@material-ui/core/colors";
 
 const todos = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => ({
   title: `Title ${t}`,
@@ -58,11 +61,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#0d47a1",
+    },
+    secondary: {
+      main: "#e65100",
+    },
+  },
+});
+
 export default () => {
   const classes = useStyles();
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Paper square className={classes.paper}>
         <Typography className={classes.text} variant="h5" gutterBottom>
@@ -100,6 +114,6 @@ export default () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-    </>
+    </ThemeProvider>
   );
 };

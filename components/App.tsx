@@ -16,8 +16,8 @@ import {
   Fab,
   ThemeProvider,
   createMuiTheme,
+  Container,
 } from "@material-ui/core";
-import { orange, blue } from "@material-ui/core/colors";
 
 const todos = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => ({
   title: `Title ${t}`,
@@ -79,19 +79,21 @@ export default () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Paper square className={classes.paper}>
-        <Typography className={classes.text} variant="h5" gutterBottom>
-          Todos
-        </Typography>
-        <List className={classes.list}>
-          {todos.map(({ title, body }, i) => (
-            <React.Fragment key={i}>
-              {i != 0 && <Divider />}
-              <ListItem button key={i}>
-                <ListItemText primary={title} secondary={body} />
-              </ListItem>
-            </React.Fragment>
-          ))}
-        </List>
+        <Container maxWidth="sm" disableGutters>
+          <Typography className={classes.text} variant="h5" gutterBottom>
+            Todos
+          </Typography>
+          <List className={classes.list}>
+            {todos.map(({ title, body }, i) => (
+              <React.Fragment key={i}>
+                {i != 0 && <Divider />}
+                <ListItem button key={i}>
+                  <ListItemText primary={title} secondary={body} />
+                </ListItem>
+              </React.Fragment>
+            ))}
+          </List>
+        </Container>
       </Paper>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar>

@@ -8,27 +8,33 @@ import { Heading, Text, Card, Box, Button } from "rebass";
 import styled from "styled-components";
 import { FaPlus, FaRegCheckSquare, FaCog } from "react-icons/fa";
 
-const TodoCard = styled(Card)`
-  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  border-radius: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  margin-bottom: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  transition-duration: 0.2s;
+const withHover = (
+  center: boolean,
+  shadow?: boolean
+) => `transition-duration: 0.2s;
   transition-timing-function: ease-in-out;
   transition-delay: initial;
   transition-property: all;
   cursor: pointer;
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.13);
+    transform: ${center ? "translateX(-50%)" : ""} scale(1.05);
+    ${shadow ? "box-shadow: 0 0 15px rgba(0, 0, 0, 0.13);" : ""}
   }
 
   &:active {
-    transform: scale(1);
-    background: rgba(0, 0, 0, 0.13);
-  }
+    transform: ${center ? "translateX(-50%)" : ""} scale(1);
+    ${shadow ? "background: rgba(0, 0, 0, 0.13);" : ""}
+  }`;
+
+const TodoCard = styled(Card)`
+  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+  border-radius: ${({ theme }: { theme: Theme }) =>
+    theme.space[1]}rem !important;
+  margin-bottom: ${({ theme }: { theme: Theme }) =>
+    theme.space[1]}rem !important;
+
+  ${withHover(false, true)}
 `;
 
 const Container = styled(Box)`
@@ -76,6 +82,12 @@ const AddNoteButton = styled(Button)`
     margin-right: ${({ theme }: { theme: Theme }) =>
       (theme.space[1] as number) / 2}rem;
   }
+
+  &:active {
+    background: #ff6a00 !important;
+  }
+
+  ${withHover(true, true)}
 `;
 
 const IconButton = styled(Button)`
@@ -83,6 +95,17 @@ const IconButton = styled(Button)`
   display: flex !important;
   justify-content: center;
   align-items: center;
+
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-delay: initial;
+  transition-property: all;
+  cursor: pointer;
+
+  &:hover,
+  &:active {
+    color: #d9d9d9;
+  }
 `;
 
 const theme = {

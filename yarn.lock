@@ -2622,6 +2622,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-icons@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/react-icons@npm:3.0.0"
+  dependencies:
+    react-icons: "*"
+  checksum: 3/bc53a7ebde39466a22bf546441a67ea8121fb32b4d060728b5720ee3652558304b4887d0b8c3c87337a38b549b58a5cdcb83f5dae1db52b897e8f492460bc398
+  languageName: node
+  linkType: hard
+
 "@types/react-native@npm:*":
   version: 0.62.9
   resolution: "@types/react-native@npm:0.62.9"
@@ -6584,6 +6593,7 @@ __metadata:
     "@types/google-protobuf": ^3.7.2
     "@types/react": ^16.9.35
     "@types/react-dom": ^16.9.8
+    "@types/react-icons": ^3.0.0
     "@types/rebass": ^4.0.6
     "@types/styled-components": ^5.1.0
     "@types/theme-ui": ^0.3.2
@@ -6592,6 +6602,7 @@ __metadata:
     parcel: nightly
     react: ^16.13.1
     react-dom: ^16.13.1
+    react-icons: ^3.10.0
     react-is: ^16.13.1
     rebass: ^4.0.7
     styled-components: ^5.1.0
@@ -7984,6 +7995,17 @@ __metadata:
   peerDependencies:
     react: ^16.13.1
   checksum: 3/fb5c3ad41360c6a8674f33916aa895d05e79d063d31a6963074220c1cda9e07e880799d01670b4ebd570b4d3457584f13cc898b5033a05641e8e801f5611607e
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:*, react-icons@npm:^3.10.0":
+  version: 3.10.0
+  resolution: "react-icons@npm:3.10.0"
+  dependencies:
+    camelcase: ^5.0.0
+  peerDependencies:
+    react: "*"
+  checksum: 3/848c40d1db512cd58e97507b21a4aebf81df4623495235613186127ddbb96a338e320176d6ef042bb14f619f019fcb23ae35489a7784078fc82e8a1c3c8112ba
   languageName: node
   linkType: hard
 

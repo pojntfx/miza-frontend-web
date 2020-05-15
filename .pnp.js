@@ -66,6 +66,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:16.9.8"
       ],
       [
+        "@types/react-icons",
+        "npm:3.0.0"
+      ],
+      [
         "@types/rebass",
         "npm:4.0.6"
       ],
@@ -96,6 +100,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "react-dom",
         "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"
+      ],
+      [
+        "react-icons",
+        "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"
       ],
       [
         "react-is",
@@ -138,6 +146,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/google-protobuf", "npm:3.7.2"],
             ["@types/react", "npm:16.9.35"],
             ["@types/react-dom", "npm:16.9.8"],
+            ["@types/react-icons", "npm:3.0.0"],
             ["@types/rebass", "npm:4.0.6"],
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
@@ -146,6 +155,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["parcel", "npm:2.0.0-nightly.270"],
             ["react", "npm:16.13.1"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
+            ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
             ["react-is", "npm:16.13.1"],
             ["rebass", "npm:4.0.7"],
             ["styled-components", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.0"],
@@ -3275,6 +3285,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@types/react-dom", "npm:16.9.8"],
             ["@types/react", "npm:16.9.35"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/react-icons", [
+        ["npm:3.0.0", {
+          "packageLocation": "./.yarn/cache/@types-react-icons-npm-3.0.0-db6868aae3-3.zip/node_modules/@types/react-icons/",
+          "packageDependencies": [
+            ["@types/react-icons", "npm:3.0.0"],
+            ["react-icons", "virtual:db6868aae3b0ebbfe2a4b4ec4372353f0b542900bf16a7edce80cb3623fbf1dbf7ac8153f2185a6ad8d2eb6495648fac3adc77b4fbf372b8f123e2cc3a2b93a7#npm:3.10.0"]
           ],
           "linkType": "HARD",
         }]
@@ -7748,6 +7768,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/google-protobuf", "npm:3.7.2"],
             ["@types/react", "npm:16.9.35"],
             ["@types/react-dom", "npm:16.9.8"],
+            ["@types/react-icons", "npm:3.0.0"],
             ["@types/rebass", "npm:4.0.6"],
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
@@ -7756,6 +7777,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["parcel", "npm:2.0.0-nightly.270"],
             ["react", "npm:16.13.1"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
+            ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
             ["react-is", "npm:16.13.1"],
             ["rebass", "npm:4.0.7"],
             ["styled-components", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.0"],
@@ -9315,6 +9337,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prop-types", "npm:15.7.2"],
             ["react", "npm:16.13.1"],
             ["scheduler", "npm:0.19.1"]
+          ],
+          "packagePeers": [
+            "react"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["react-icons", [
+        ["virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0", {
+          "packageLocation": "./.yarn/$$virtual/react-icons-virtual-bc3c036e1f/0/cache/react-icons-npm-3.10.0-a2589318d4-3.zip/node_modules/react-icons/",
+          "packageDependencies": [
+            ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
+            ["camelcase", "npm:5.3.1"],
+            ["react", "npm:16.13.1"]
+          ],
+          "packagePeers": [
+            "react"
+          ],
+          "linkType": "HARD",
+        }],
+        ["virtual:db6868aae3b0ebbfe2a4b4ec4372353f0b542900bf16a7edce80cb3623fbf1dbf7ac8153f2185a6ad8d2eb6495648fac3adc77b4fbf372b8f123e2cc3a2b93a7#npm:3.10.0", {
+          "packageLocation": "./.yarn/$$virtual/react-icons-virtual-ac0041edc9/0/cache/react-icons-npm-3.10.0-a2589318d4-3.zip/node_modules/react-icons/",
+          "packageDependencies": [
+            ["react-icons", "virtual:db6868aae3b0ebbfe2a4b4ec4372353f0b542900bf16a7edce80cb3623fbf1dbf7ac8153f2185a6ad8d2eb6495648fac3adc77b4fbf372b8f123e2cc3a2b93a7#npm:3.10.0"],
+            ["camelcase", "npm:5.3.1"],
+            ["react", null]
           ],
           "packagePeers": [
             "react"

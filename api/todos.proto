@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package todos;
+option go_package = "proto";
+
+import "google/protobuf/empty.proto";
+
+// Todos manages todos
+service Todos {
+  // Create creates a todo
+  rpc Create(NewTodo) returns (Todo);
+  // List lists all todos
+  rpc List(google.protobuf.Empty) returns (TodoList);
+  // Get gets one todo
+  rpc Get(TodoID) returns (Todo);
+  // Update updates one todo
+  rpc Update(Todo) returns (Todo);
+  // Delete deletes one todo
+  rpc Delete(TodoID) returns (Todo);
+}
+
+// NewTodo is a new todo
+message NewTodo {
+  string Title = 1;
+  string Body = 2;
+}
+
+// Todo is a todo
+message Todo {
+  int64 ID = 1;
+  string Title = 2;
+  string Body = 3;
+}
+
+// TodoList is a list of todos
+message TodoList { repeated Todo Todos = 1; }
+
+// TodoID is a todo's ID
+message TodoID { int64 ID = 1; }

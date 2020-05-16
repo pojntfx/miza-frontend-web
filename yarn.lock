@@ -2281,6 +2281,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sandstreamdev/react-swipeable-list@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@sandstreamdev/react-swipeable-list@npm:0.5.0"
+  peerDependencies:
+    prop-types: ^15.7.2
+    react: ^16.12.0
+    react-dom: ^16.12.0
+  checksum: 3/d150a564efd3b8190a21766c855a6f58f24df4bab1cf7be4ef68c383296b2deaf6ea4af07a8912770e171a19644a15efdde6ec935997ed6483a2811d538a83f0
+  languageName: node
+  linkType: hard
+
 "@sindresorhus/is@npm:^2.1.1":
   version: 2.1.1
   resolution: "@sindresorhus/is@npm:2.1.1"
@@ -6589,6 +6600,7 @@ __metadata:
     "@emotion/styled": ^10.0.27
     "@improbable-eng/grpc-web": ^0.12.0
     "@rebass/preset": ^4.0.5
+    "@sandstreamdev/react-swipeable-list": ^0.5.0
     "@theme-ui/css": ^0.3.1
     "@types/google-protobuf": ^3.7.2
     "@types/react": ^16.9.35
@@ -6600,6 +6612,7 @@ __metadata:
     "@yarnpkg/pnpify": ^2.0.0-rc.22
     google-protobuf: ^3.12.0-rc.2
     parcel: nightly
+    prop-types: ^15.7.2
     react: ^16.13.1
     react-dom: ^16.13.1
     react-icons: ^3.10.0
@@ -7839,7 +7852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2":
+"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:

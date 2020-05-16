@@ -12,6 +12,7 @@ import {
   SwipeableListItem,
 } from "@sandstreamdev/react-swipeable-list";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const withHover = (
   center: boolean,
@@ -32,19 +33,22 @@ const withHover = (
     ${shadow ? "background: rgba(0, 0, 0, 0.13);" : ""}
   }`;
 
-const TodoCard = styled(Card)`
-  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  margin-left: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  margin-right: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  margin-top: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  border-radius: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  margin-bottom: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  width: 100%;
+const TodoCard = styled(Card)<{ theme: Theme; style: any }>`
+  padding: 0 !important;
+  margin-left: ${({ theme }) => theme.space[1]}rem !important;
+  margin-right: ${({ theme }) => theme.space[1]}rem !important;
+  border-radius: ${({ theme }) => theme.space[1]}rem !important;
+  margin-bottom: ${({ theme }) => theme.space[1]}rem !important;
+
+  &:first-of-type {
+    margin-top: ${({ theme }) => theme.space[1]}rem !important;
+  }
 
   ${withHover(false, true)}
+`;
+
+const TodoCardContent = styled(Box)`
+  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
 `;
 
 const ListWrapper = styled(Box)<{ theme: Theme }>`
@@ -52,27 +56,33 @@ const ListWrapper = styled(Box)<{ theme: Theme }>`
 
   > * {
     margin-top: -${({ theme }) => theme.space[1]}rem !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     > * {
-      > *:last-of-type {
-        margin: 0 auto;
-        max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
-      }
-      :not(:first-of-type) {
-        margin-top: -${({ theme }) => theme.space[1]}rem !important;
-      }
+      width: calc(100% - ${({ theme }) => (theme.space[1] as number) * 2}rem);
+      max-width: calc(
+        ${({ theme }) => (theme.space[8] as number) * 4}px -
+          ${({ theme }) => (theme.space[1] as number) * 2}rem
+      );
 
       > * {
-        &:first-of-type {
-          background: red !important;
-        }
+        > * {
+          border-radius: ${({ theme }: { theme: Theme }) =>
+            theme.space[1]}rem !important;
 
-        &:nth-of-type(2) {
-          background: ${({ theme }) => theme.colors.primary} !important;
-        }
+          &:first-of-type {
+            background: red !important;
+          }
 
-        &:last-of-type {
-          background: transparent !important;
+          &:nth-of-type(2) {
+            background: ${({ theme }) => theme.colors.primary} !important;
+          }
+
+          &:last-of-type {
+            background: transparent !important;
+          }
         }
       }
     }
@@ -168,6 +178,23 @@ const theme = {
   space: [0, 1, 2, 4, 8, 16, 32, 64, 128],
 };
 
+const getItemStyle = (draggableStyle: any) => {
+  const { transform } = draggableStyle;
+  let activeTransform = {};
+  if (transform) {
+    activeTransform = {
+      transform: `translate(0, ${transform.substring(
+        transform.indexOf(",") + 1,
+        transform.indexOf(")")
+      )})`,
+    };
+  }
+  return {
+    ...draggableStyle,
+    ...activeTransform,
+  };
+};
+
 export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
@@ -188,40 +215,69 @@ export default () => {
             </Heading>
           </Header>
         </Container>
-        <ListWrapper>
-          <SwipeableList>
-            {todos.map((todo, i) => (
-              <SwipeableListItem
-                swipeLeft={{
-                  content: (
-                    <SwipeActionWrapper>
-                      <FaTrash />
-                      <span>Delete</span>
-                    </SwipeActionWrapper>
-                  ),
-                  action: () => console.log("Deleting"),
-                }}
-                swipeRight={{
-                  content: (
-                    <SwipeActionWrapper>
-                      <FaRegCheckSquare />
-                      <span>Select</span>
-                    </SwipeActionWrapper>
-                  ),
-                  action: () => console.log("Selecting"),
-                }}
-                key={i}
-              >
-                <TodoCard key={i}>
-                  {todo.getTitle() != "" && (
-                    <Heading>{todo.getTitle()}</Heading>
-                  )}
-                  {todo.getBody() != "" && <Text>{todo.getBody()}</Text>}
-                </TodoCard>
-              </SwipeableListItem>
-            ))}
-          </SwipeableList>
-        </ListWrapper>
+        <DragDropContext
+          onDragEnd={(d) => console.log("Reordering", parseInt(d.draggableId))}
+        >
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <ListWrapper {...provided.droppableProps} ref={provided.innerRef}>
+                <SwipeableList>
+                  {todos.map((todo, i) => (
+                    <Draggable
+                      draggableId={todo.getId().toString()}
+                      index={i}
+                      key={i}
+                    >
+                      {(provided, snapshot) => (
+                        <TodoCard
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(provided.draggableProps.style)}
+                        >
+                          <SwipeableListItem
+                            swipeLeft={{
+                              content: (
+                                <SwipeActionWrapper>
+                                  <FaTrash />
+                                  <span>Delete</span>
+                                </SwipeActionWrapper>
+                              ),
+                              action: () =>
+                                console.log("Deleting", todo.getId()),
+                            }}
+                            swipeRight={{
+                              content: (
+                                <SwipeActionWrapper>
+                                  <FaRegCheckSquare />
+                                  <span>Select</span>
+                                </SwipeActionWrapper>
+                              ),
+                              action: () =>
+                                console.log("Selecting", todo.getId()),
+                            }}
+                            key={i}
+                          >
+                            <TodoCardContent>
+                              {todo.getTitle() != "" && (
+                                <Heading>{todo.getTitle()}</Heading>
+                              )}
+                              {todo.getBody() != "" && (
+                                <Text>{todo.getBody()}</Text>
+                              )}
+                            </TodoCardContent>
+                          </SwipeableListItem>
+                        </TodoCard>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </SwipeableList>
+              </ListWrapper>
+            )}
+          </Droppable>
+        </DragDropContext>
+
         <Toolbar>
           <IconButton>
             <FaRegCheckSquare />

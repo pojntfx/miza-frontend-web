@@ -47,11 +47,11 @@ const TodoCard = styled(Card)`
   ${withHover(false, true)}
 `;
 
-const ListWrapper = styled(Box)`
+const ListWrapper = styled(Box)<{ theme: Theme }>`
   margin-bottom: 4rem !important;
 
   > * {
-    margin-top: -${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+    margin-top: -${({ theme }) => theme.space[1]}rem !important;
 
     > * {
       > *:last-of-type {
@@ -59,9 +59,19 @@ const ListWrapper = styled(Box)`
         max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
       }
       :not(:first-of-type) {
-        margin-top: -${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+        margin-top: -${({ theme }) => theme.space[1]}rem !important;
+      }
 
-        > *:last-of-type {
+      > * {
+        &:first-of-type {
+          background: red !important;
+        }
+
+        &:nth-of-type(2) {
+          background: ${({ theme }) => theme.colors.primary} !important;
+        }
+
+        &:last-of-type {
           background: transparent !important;
         }
       }
@@ -144,7 +154,7 @@ const theme = {
 };
 
 export default () => {
-  const client = new TodosClient("http://localhost:8080");
+  const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
   React.useEffect(() => {

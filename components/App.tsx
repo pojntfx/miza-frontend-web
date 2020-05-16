@@ -13,7 +13,9 @@ import {
 } from "@sandstreamdev/react-swipeable-list";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { GridLoader } from "react-spinners";
+import { SyncLoader } from "react-spinners";
+import { Transition } from "react-spring/renderprops";
+import { LoaderSizeProps } from "react-spinners/interfaces";
 
 const withHover = (
   center: boolean,
@@ -225,7 +227,24 @@ export default () => {
             <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
               Todos
             </Heading>
-            <GridLoader color="#ff6a00" size={7.5} loading={loading} />
+            <Transition
+              items={loading}
+              from={{ opacity: 0 }}
+              enter={{ opacity: 1 }}
+              leave={{ opacity: 0 }}
+            >
+              {(loading) =>
+                loading &&
+                ((props) => (
+                  <SyncLoader
+                    color="#ff6a00"
+                    size={7.5}
+                    loading={loading}
+                    css={(props as unknown) as LoaderSizeProps["css"]}
+                  />
+                ))
+              }
+            </Transition>
           </Header>
         </Container>
         <DragDropContext

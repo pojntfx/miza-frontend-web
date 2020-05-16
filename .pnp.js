@@ -50,6 +50,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:4.0.5"
       ],
       [
+        "@sandstreamdev/react-swipeable-list",
+        "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"
+      ],
+      [
         "@theme-ui/css",
         "npm:0.3.1"
       ],
@@ -92,6 +96,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "parcel",
         "npm:2.0.0-nightly.270"
+      ],
+      [
+        "prop-types",
+        "npm:15.7.2"
       ],
       [
         "react",
@@ -142,6 +150,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@emotion/styled", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:10.0.27"],
             ["@improbable-eng/grpc-web", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.12.0"],
             ["@rebass/preset", "npm:4.0.5"],
+            ["@sandstreamdev/react-swipeable-list", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"],
             ["@theme-ui/css", "npm:0.3.1"],
             ["@types/google-protobuf", "npm:3.7.2"],
             ["@types/react", "npm:16.9.35"],
@@ -153,6 +162,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
             ["parcel", "npm:2.0.0-nightly.270"],
+            ["prop-types", "npm:15.7.2"],
             ["react", "npm:16.13.1"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
             ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
@@ -2855,6 +2865,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@rebass-preset-npm-4.0.5-ea3d1e66f2-3.zip/node_modules/@rebass/preset/",
           "packageDependencies": [
             ["@rebass/preset", "npm:4.0.5"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@sandstreamdev/react-swipeable-list", [
+        ["virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0", {
+          "packageLocation": "./.yarn/$$virtual/@sandstreamdev-react-swipeable-list-virtual-c431f0dac3/0/cache/@sandstreamdev-react-swipeable-list-npm-0.5.0-da4c816d3b-3.zip/node_modules/@sandstreamdev/react-swipeable-list/",
+          "packageDependencies": [
+            ["@sandstreamdev/react-swipeable-list", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"],
+            ["prop-types", "npm:15.7.2"],
+            ["react", "npm:16.13.1"],
+            ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"]
+          ],
+          "packagePeers": [
+            "prop-types",
+            "react",
+            "react-dom"
           ],
           "linkType": "HARD",
         }]
@@ -7764,6 +7791,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@emotion/styled", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:10.0.27"],
             ["@improbable-eng/grpc-web", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.12.0"],
             ["@rebass/preset", "npm:4.0.5"],
+            ["@sandstreamdev/react-swipeable-list", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"],
             ["@theme-ui/css", "npm:0.3.1"],
             ["@types/google-protobuf", "npm:3.7.2"],
             ["@types/react", "npm:16.9.35"],
@@ -7775,6 +7803,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
             ["parcel", "npm:2.0.0-nightly.270"],
+            ["prop-types", "npm:15.7.2"],
             ["react", "npm:16.13.1"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
             ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],

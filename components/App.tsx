@@ -7,6 +7,11 @@ import preset from "@rebass/preset";
 import { Heading, Text, Card, Box, Button } from "rebass";
 import styled from "styled-components";
 import { FaPlus, FaRegCheckSquare, FaCog } from "react-icons/fa";
+import {
+  SwipeableList,
+  SwipeableListItem,
+} from "@sandstreamdev/react-swipeable-list";
+import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 
 const withHover = (
   center: boolean,
@@ -29,20 +34,45 @@ const withHover = (
 
 const TodoCard = styled(Card)`
   padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+  margin-left: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+  margin-right: ${({ theme }: { theme: Theme }) =>
+    theme.space[1]}rem !important;
+  margin-top: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
   border-radius: ${({ theme }: { theme: Theme }) =>
     theme.space[1]}rem !important;
   margin-bottom: ${({ theme }: { theme: Theme }) =>
     theme.space[1]}rem !important;
+  width: 100%;
 
   ${withHover(false, true)}
 `;
 
-const Container = styled(Box)`
-  max-width: ${({ theme }: { theme: Theme }) =>
-    (theme.space[8] as number) * 4}px;
-  margin: 0 auto !important;
-  padding: 0 ${({ theme }: { theme: Theme }) => theme.space[1]}rem;
+const ListWrapper = styled(Box)`
   margin-bottom: 4rem !important;
+
+  > * {
+    margin-top: -${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+
+    > * {
+      > *:last-of-type {
+        margin: 0 auto;
+        max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
+      }
+      :not(:first-of-type) {
+        margin-top: -${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+
+        > *:last-of-type {
+          background: transparent !important;
+        }
+      }
+    }
+  }
+`;
+
+const Container = styled(Box)<{ theme: Theme }>`
+  max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
+  margin: 0 auto !important;
+  padding: 0 ${({ theme }) => theme.space[1]}rem;
 `;
 
 const Header = styled.div`
@@ -132,14 +162,31 @@ export default () => {
               Todos
             </Heading>
           </Header>
-
-          {todos.map((todo, i) => (
-            <TodoCard key={i}>
-              {todo.getTitle() != "" && <Heading>{todo.getTitle()}</Heading>}
-              {todo.getBody() != "" && <Text>{todo.getBody()}</Text>}
-            </TodoCard>
-          ))}
         </Container>
+        <ListWrapper>
+          <SwipeableList>
+            {todos.map((todo, i) => (
+              <SwipeableListItem
+                swipeLeft={{
+                  content: <div>Left</div>,
+                  action: () => console.log("Left"),
+                }}
+                swipeRight={{
+                  content: <div>Right</div>,
+                  action: () => console.log("Right"),
+                }}
+                key={i}
+              >
+                <TodoCard key={i}>
+                  {todo.getTitle() != "" && (
+                    <Heading>{todo.getTitle()}</Heading>
+                  )}
+                  {todo.getBody() != "" && <Text>{todo.getBody()}</Text>}
+                </TodoCard>
+              </SwipeableListItem>
+            ))}
+          </SwipeableList>
+        </ListWrapper>
         <Toolbar>
           <IconButton>
             <FaRegCheckSquare />

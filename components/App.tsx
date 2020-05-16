@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TodosClient } from "../api/generated/api/todos_pb_service";
-import { Todo } from "../api/generated/api/todos_pb";
+import { Todo, TodoID } from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
@@ -199,10 +199,13 @@ export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
 
+  const refresh = () =>
+    client.list(new Todo(), (e, res) =>
+      e ? console.error(e) : setTodos(res.getTodosList())
+    );
+
   React.useEffect(() => {
-    client.list(new Todo(), (e, res) => {
-      setTodos(res.getTodosList());
-    });
+    refresh();
   }, []);
 
   return (
@@ -219,7 +222,7 @@ export default () => {
           onDragEnd={(d) => console.log("Reordering", parseInt(d.draggableId))}
         >
           <Droppable droppableId="droppable">
-            {(provided, snapshot) => (
+            {(provided) => (
               <ListWrapper {...provided.droppableProps} ref={provided.innerRef}>
                 <SwipeableList>
                   {todos.map((todo, i) => (
@@ -228,7 +231,7 @@ export default () => {
                       index={i}
                       key={i}
                     >
-                      {(provided, snapshot) => (
+                      {(provided) => (
                         <TodoCard
                           ref={provided.innerRef}
                           {...provided.draggableProps}
@@ -243,8 +246,14 @@ export default () => {
                                   <span>Delete</span>
                                 </SwipeActionWrapper>
                               ),
-                              action: () =>
-                                console.log("Deleting", todo.getId()),
+                              action: () => {
+                                const todoID = new TodoID();
+                                todoID.setId(todo.getId());
+
+                                client.delete(todoID, (e) =>
+                                  e ? console.error(e) : refresh()
+                                );
+                              },
                             }}
                             swipeRight={{
                               content: (

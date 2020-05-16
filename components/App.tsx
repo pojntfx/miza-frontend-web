@@ -13,6 +13,7 @@ import {
 } from "@sandstreamdev/react-swipeable-list";
 import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { GridLoader } from "react-spinners";
 
 const withHover = (
   center: boolean,
@@ -95,10 +96,12 @@ const Container = styled(Box)<{ theme: Theme }>`
   padding: 0 ${({ theme }) => theme.space[1]}rem;
 `;
 
-const Header = styled.div`
-  padding-top: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  padding-bottom: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
+const Header = styled(Box)<{ theme: Theme }>`
+  padding-top: ${({ theme }) => theme.space[1]}rem !important;
+  padding-bottom: ${({ theme }) => theme.space[1]}rem !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Toolbar = styled(Box)`
@@ -198,11 +201,17 @@ const getItemStyle = (draggableStyle: any) => {
 export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [loading, setLoading] = React.useState(false);
 
-  const refresh = () =>
-    client.list(new Todo(), (e, res) =>
-      e ? console.error(e) : setTodos(res.getTodosList())
-    );
+  const refresh = () => {
+    setLoading(true);
+
+    client.list(new Todo(), (e, res) => {
+      e ? console.error(e) : setTodos(res.getTodosList());
+
+      setLoading(false);
+    });
+  };
 
   React.useEffect(() => {
     refresh();
@@ -216,6 +225,7 @@ export default () => {
             <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
               Todos
             </Heading>
+            <GridLoader color="#ff6a00" size={7.5} loading={loading} />
           </Header>
         </Container>
         <DragDropContext
@@ -250,9 +260,13 @@ export default () => {
                                 const todoID = new TodoID();
                                 todoID.setId(todo.getId());
 
+                                setLoading(true);
+
                                 client.delete(todoID, (e) =>
                                   e ? console.error(e) : refresh()
                                 );
+
+                                setLoading(false);
                               },
                             }}
                             swipeRight={{

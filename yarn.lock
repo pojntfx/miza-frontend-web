@@ -1204,7 +1204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/core@npm:^10.0.0, @emotion/core@npm:^10.0.28":
+"@emotion/core@npm:^10.0.0, @emotion/core@npm:^10.0.15, @emotion/core@npm:^10.0.28":
   version: 10.0.28
   resolution: "@emotion/core@npm:10.0.28"
   dependencies:
@@ -6652,6 +6652,7 @@ __metadata:
     react-dom: ^16.13.1
     react-icons: ^3.10.0
     react-is: ^16.13.1
+    react-spinners: ^0.8.3
     rebass: ^4.0.7
     styled-components: ^5.1.0
     theme-ui: ^0.3.1
@@ -8116,6 +8117,18 @@ __metadata:
   version: 0.6.0
   resolution: "react-refresh@npm:0.6.0"
   checksum: 3/7d9dad92b48cbcbd83d23630e8be2e4af893f59bc9f9b7881761620ab29cd504f998311fc327bdf6a096557722ea495da03098f02066fc213903c90ae1ceeab6
+  languageName: node
+  linkType: hard
+
+"react-spinners@npm:^0.8.3":
+  version: 0.8.3
+  resolution: "react-spinners@npm:0.8.3"
+  dependencies:
+    "@emotion/core": ^10.0.15
+  peerDependencies:
+    react: ^16.0.0
+    react-dom: ^16.0.0
+  checksum: 3/d441f25e3be40f9d5851ccfd18b84ddc6df4a033c72d2c336fc5b3a59d7766cfda39a74cac7853122d1b6fc92f4729a27e306dc8c83e678e9af43defe896c5c1
   languageName: node
   linkType: hard
 

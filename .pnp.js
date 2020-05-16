@@ -62,6 +62,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:3.7.2"
       ],
       [
+        "@types/node",
+        "npm:14.0.1"
+      ],
+      [
         "@types/react",
         "npm:16.9.35"
       ],
@@ -153,6 +157,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@sandstreamdev/react-swipeable-list", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"],
             ["@theme-ui/css", "npm:0.3.1"],
             ["@types/google-protobuf", "npm:3.7.2"],
+            ["@types/node", "npm:14.0.1"],
             ["@types/react", "npm:16.9.35"],
             ["@types/react-dom", "npm:16.9.8"],
             ["@types/react-icons", "npm:3.0.0"],
@@ -3264,6 +3269,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-node-npm-13.13.6-9419e0e749-3.zip/node_modules/@types/node/",
           "packageDependencies": [
             ["@types/node", "npm:13.13.6"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:14.0.1", {
+          "packageLocation": "./.yarn/cache/@types-node-npm-14.0.1-1942cab116-3.zip/node_modules/@types/node/",
+          "packageDependencies": [
+            ["@types/node", "npm:14.0.1"]
           ],
           "linkType": "HARD",
         }]
@@ -7794,6 +7806,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@sandstreamdev/react-swipeable-list", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:0.5.0"],
             ["@theme-ui/css", "npm:0.3.1"],
             ["@types/google-protobuf", "npm:3.7.2"],
+            ["@types/node", "npm:14.0.1"],
             ["@types/react", "npm:16.9.35"],
             ["@types/react-dom", "npm:16.9.8"],
             ["@types/react-icons", "npm:3.0.0"],

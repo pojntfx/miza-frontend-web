@@ -258,7 +258,7 @@ export default () => {
                     <Draggable
                       draggableId={todo.getId().toString()}
                       index={i}
-                      key={i}
+                      key={todo.getId()}
                     >
                       {(provided) => (
                         <TodoCard
@@ -279,13 +279,16 @@ export default () => {
                                 const todoID = new TodoID();
                                 todoID.setId(todo.getId());
 
-                                setLoading(true);
-
-                                client.delete(todoID, (e) =>
-                                  e ? console.error(e) : refresh()
+                                const shouldDelete = confirm(
+                                  "Do you want to delete this todo?"
                                 );
 
-                                setLoading(false);
+                                shouldDelete &&
+                                  client.delete(todoID, async (e) => {
+                                    e && console.error(e);
+
+                                    refresh();
+                                  });
                               },
                             }}
                             swipeRight={{

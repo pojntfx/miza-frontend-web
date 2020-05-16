@@ -6,7 +6,7 @@ import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
 import { Heading, Text, Card, Box, Button } from "rebass";
 import styled from "styled-components";
-import { FaPlus, FaRegCheckSquare, FaCog } from "react-icons/fa";
+import { FaPlus, FaRegCheckSquare, FaCog, FaTrash } from "react-icons/fa";
 import {
   SwipeableList,
   SwipeableListItem,
@@ -148,6 +148,21 @@ const IconButton = styled(Button)`
   }
 `;
 
+const SwipeActionWrapper = styled(Box)<{ theme: Theme }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem;
+  color: white !important;
+
+  > * {
+    &:first-of-type {
+      margin-right: ${({ theme }: { theme: Theme }) =>
+        (theme.space[1] as number) / 2}rem !important;
+    }
+  }
+`;
+
 const theme = {
   ...preset,
   space: [0, 1, 2, 4, 8, 16, 32, 64, 128],
@@ -178,12 +193,22 @@ export default () => {
             {todos.map((todo, i) => (
               <SwipeableListItem
                 swipeLeft={{
-                  content: <div>Left</div>,
-                  action: () => console.log("Left"),
+                  content: (
+                    <SwipeActionWrapper>
+                      <FaTrash />
+                      <span>Delete</span>
+                    </SwipeActionWrapper>
+                  ),
+                  action: () => console.log("Deleting"),
                 }}
                 swipeRight={{
-                  content: <div>Right</div>,
-                  action: () => console.log("Right"),
+                  content: (
+                    <SwipeActionWrapper>
+                      <FaRegCheckSquare />
+                      <span>Select</span>
+                    </SwipeActionWrapper>
+                  ),
+                  action: () => console.log("Selecting"),
                 }}
                 key={i}
               >

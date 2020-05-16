@@ -6,7 +6,13 @@ import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
 import { Heading, Text, Card, Box, Button } from "rebass";
 import styled from "styled-components";
-import { FaPlus, FaRegCheckSquare, FaCog, FaTrash } from "react-icons/fa";
+import {
+  FaPlus,
+  FaRegCheckSquare,
+  FaCog,
+  FaTrash,
+  FaTimes,
+} from "react-icons/fa";
 import {
   SwipeableList,
   SwipeableListItem,
@@ -52,6 +58,10 @@ const TodoCard = styled(Card)<{ theme: Theme; style: any }>`
 
 const TodoCardContent = styled(Box)`
   padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 
 const ListWrapper = styled(Box)<{ theme: Theme }>`
@@ -145,7 +155,7 @@ const AddNoteButton = styled(Button)`
   ${withHover(true, true)}
 `;
 
-const IconButton = styled(Button)`
+const IconButton = styled(Button)<{ theme: Theme; inverted?: boolean }>`
   cursor: pointer;
   display: flex !important;
   justify-content: center;
@@ -157,9 +167,13 @@ const IconButton = styled(Button)`
   transition-property: all;
   cursor: pointer;
 
+  color: ${({ theme, inverted }) =>
+    inverted ? `${theme.colors.text} !important` : "inherit"};
+  background: transparent !important;
+
   &:hover,
   &:active {
-    color: #d9d9d9;
+    color: ${({ inverted }) => (inverted ? "red" : "#d9d9d9")} !important;
   }
 `;
 
@@ -260,60 +274,70 @@ export default () => {
                       index={i}
                       key={todo.getId()}
                     >
-                      {(provided) => (
-                        <TodoCard
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(provided.draggableProps.style)}
-                        >
-                          <SwipeableListItem
-                            swipeLeft={{
-                              content: (
-                                <SwipeActionWrapper>
-                                  <FaTrash />
-                                  <span>Delete</span>
-                                </SwipeActionWrapper>
-                              ),
-                              action: () => {
-                                const todoID = new TodoID();
-                                todoID.setId(todo.getId());
+                      {(provided) => {
+                        const deleteTodo = () => {
+                          const todoID = new TodoID();
+                          todoID.setId(todo.getId());
 
-                                const shouldDelete = confirm(
-                                  "Do you want to delete this todo?"
-                                );
+                          const shouldDelete = confirm(
+                            `Do you want to delete todo ${todo.getTitle()}?`
+                          );
 
-                                shouldDelete &&
-                                  client.delete(todoID, async (e) => {
-                                    e && console.error(e);
+                          shouldDelete &&
+                            client.delete(todoID, async (e) => {
+                              e && console.error(e);
 
-                                    refresh();
-                                  });
-                              },
-                            }}
-                            swipeRight={{
-                              content: (
-                                <SwipeActionWrapper>
-                                  <FaRegCheckSquare />
-                                  <span>Select</span>
-                                </SwipeActionWrapper>
-                              ),
-                              action: () =>
-                                console.log("Selecting", todo.getId()),
-                            }}
-                            key={i}
+                              refresh();
+                            });
+                        };
+
+                        return (
+                          <TodoCard
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(provided.draggableProps.style)}
                           >
-                            <TodoCardContent>
-                              {todo.getTitle() != "" && (
-                                <Heading>{todo.getTitle()}</Heading>
-                              )}
-                              {todo.getBody() != "" && (
-                                <Text>{todo.getBody()}</Text>
-                              )}
-                            </TodoCardContent>
-                          </SwipeableListItem>
-                        </TodoCard>
-                      )}
+                            <SwipeableListItem
+                              swipeLeft={{
+                                content: (
+                                  <SwipeActionWrapper>
+                                    <FaTrash />
+                                    <span>Delete</span>
+                                  </SwipeActionWrapper>
+                                ),
+                                action: deleteTodo,
+                              }}
+                              swipeRight={{
+                                content: (
+                                  <SwipeActionWrapper>
+                                    <FaRegCheckSquare />
+                                    <span>Select</span>
+                                  </SwipeActionWrapper>
+                                ),
+                                action: () =>
+                                  console.log("Selecting", todo.getId()),
+                              }}
+                              key={i}
+                            >
+                              <TodoCardContent>
+                                <Box>
+                                  {todo.getTitle() != "" && (
+                                    <Heading>{todo.getTitle()}</Heading>
+                                  )}
+                                  {todo.getBody() != "" && (
+                                    <Text>{todo.getBody()}</Text>
+                                  )}
+                                </Box>
+
+                                <IconButton onClick={deleteTodo} inverted>
+                                  <FaTimes />
+                                </IconButton>
+                              </TodoCardContent>
+                            </SwipeableListItem>
+                          </TodoCard>
+                        );
+                      }}
                     </Draggable>
                   ))}
                   {provided.placeholder}
@@ -329,7 +353,7 @@ export default () => {
           </IconButton>
           <AddNoteButton>
             <FaPlus />
-            <span>Add Note</span>
+            <span>Add Todo</span>
           </AddNoteButton>
           <IconButton>
             <FaCog />

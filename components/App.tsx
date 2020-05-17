@@ -12,6 +12,7 @@ import {
   FaCog,
   FaTrash,
   FaTimes,
+  FaSave,
 } from "react-icons/fa";
 import {
   SwipeableList,
@@ -22,6 +23,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { SyncLoader } from "react-spinners";
 import { Transition } from "react-spring/renderprops";
 import { LoaderSizeProps } from "react-spinners/interfaces";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
 const withHover = (
   center: boolean,
@@ -142,6 +144,9 @@ const AddNoteButton = styled(Button)`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: white !important;
+  text-decoration: none;
+  font-weight: bold;
 
   & > *:first-child {
     margin-right: ${({ theme }: { theme: Theme }) =>
@@ -192,6 +197,25 @@ const SwipeActionWrapper = styled(Box)<{ theme: Theme }>`
   }
 `;
 
+const HoverButton = styled(Button)<{ theme: Theme }>`
+  ${withHover(false, true)}
+
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }: { theme: Theme }) => (theme.space[1] as number) / 2}rem
+    ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
+
+  & > *:last-child:not(:first-child) {
+    margin-left: ${({ theme }: { theme: Theme }) =>
+      (theme.space[1] as number) / 2}rem;
+  }
+
+  &:active {
+    background: #00406e;
+  }
+`;
+
 const theme = {
   ...preset,
   space: [0, 1, 2, 4, 8, 16, 32, 64, 128],
@@ -236,129 +260,161 @@ export default () => {
   return (
     <StyledComponentsThemeProvider theme={theme}>
       <ThemeUIThemeProvider theme={theme}>
-        <Container>
-          <Header>
-            <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-              Todos
-            </Heading>
-            <Transition
-              items={loading}
-              from={{ opacity: 0 }}
-              enter={{ opacity: 1 }}
-              leave={{ opacity: 0 }}
-            >
-              {(loading) =>
-                loading &&
-                ((props) => (
-                  <SyncLoader
-                    color="#ff6a00"
-                    size={7.5}
-                    loading={loading}
-                    css={(props as unknown) as LoaderSizeProps["css"]}
-                  />
-                ))
-              }
-            </Transition>
-          </Header>
-        </Container>
-        <DragDropContext
-          onDragEnd={(d) => console.log("Reordering", parseInt(d.draggableId))}
-        >
-          <Droppable droppableId="droppable">
-            {(provided) => (
-              <ListWrapper {...provided.droppableProps} ref={provided.innerRef}>
-                <SwipeableList>
-                  {todos.map((todo, i) => (
-                    <Draggable
-                      draggableId={todo.getId().toString()}
-                      index={i}
-                      key={todo.getId()}
+        <BrowserRouter>
+          <Switch>
+            <Route path="/new">
+              <Container>
+                <Header>
+                  <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
+                    New Todo
+                  </Heading>
+                  <Link to="/">
+                    <IconButton inverted>
+                      <FaTimes />
+                    </IconButton>
+                  </Link>
+                </Header>
+
+                <HoverButton>
+                  <FaSave />
+                  <span>Create</span>
+                </HoverButton>
+              </Container>
+            </Route>
+            <Route path="/">
+              <Container>
+                <Header>
+                  <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
+                    Todos
+                  </Heading>
+                  <Transition
+                    items={loading}
+                    from={{ opacity: 0 }}
+                    enter={{ opacity: 1 }}
+                    leave={{ opacity: 0 }}
+                  >
+                    {(loading) =>
+                      loading &&
+                      ((props) => (
+                        <SyncLoader
+                          color="#ff6a00"
+                          size={7.5}
+                          loading={loading}
+                          css={(props as unknown) as LoaderSizeProps["css"]}
+                        />
+                      ))
+                    }
+                  </Transition>
+                </Header>
+              </Container>
+              <DragDropContext
+                onDragEnd={(d) =>
+                  console.log("Reordering", parseInt(d.draggableId))
+                }
+              >
+                <Droppable droppableId="droppable">
+                  {(provided) => (
+                    <ListWrapper
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
                     >
-                      {(provided) => {
-                        const deleteTodo = () => {
-                          const todoID = new TodoID();
-                          todoID.setId(todo.getId());
-
-                          const shouldDelete = confirm(
-                            `Do you want to delete todo ${todo.getTitle()}?`
-                          );
-
-                          shouldDelete &&
-                            client.delete(todoID, async (e) => {
-                              e && console.error(e);
-
-                              refresh();
-                            });
-                        };
-
-                        return (
-                          <TodoCard
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(provided.draggableProps.style)}
+                      <SwipeableList>
+                        {todos.map((todo, i) => (
+                          <Draggable
+                            draggableId={todo.getId().toString()}
+                            index={i}
+                            key={todo.getId()}
                           >
-                            <SwipeableListItem
-                              swipeLeft={{
-                                content: (
-                                  <SwipeActionWrapper>
-                                    <FaTrash />
-                                    <span>Delete</span>
-                                  </SwipeActionWrapper>
-                                ),
-                                action: deleteTodo,
-                              }}
-                              swipeRight={{
-                                content: (
-                                  <SwipeActionWrapper>
-                                    <FaRegCheckSquare />
-                                    <span>Select</span>
-                                  </SwipeActionWrapper>
-                                ),
-                                action: () =>
-                                  console.log("Selecting", todo.getId()),
-                              }}
-                              key={i}
-                            >
-                              <TodoCardContent>
-                                <Box>
-                                  {todo.getTitle() != "" && (
-                                    <Heading>{todo.getTitle()}</Heading>
-                                  )}
-                                  {todo.getBody() != "" && (
-                                    <Text>{todo.getBody()}</Text>
-                                  )}
-                                </Box>
+                            {(provided) => {
+                              const deleteTodo = () => {
+                                const todoID = new TodoID();
+                                todoID.setId(todo.getId());
 
-                                <IconButton onClick={deleteTodo} inverted>
-                                  <FaTimes />
-                                </IconButton>
-                              </TodoCardContent>
-                            </SwipeableListItem>
-                          </TodoCard>
-                        );
-                      }}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </SwipeableList>
-              </ListWrapper>
-            )}
-          </Droppable>
-        </DragDropContext>
+                                const shouldDelete = confirm(
+                                  `Do you want to delete todo ${todo.getTitle()}?`
+                                );
 
-        <Toolbar>
-          <IconButton>
-            <FaRegCheckSquare />
-          </IconButton>
-          <AddNoteButton>
-            <FaPlus />
-            <span>Add Todo</span>
-          </AddNoteButton>
-          <IconButton>
-            <FaCog />
-          </IconButton>
-        </Toolbar>
+                                shouldDelete &&
+                                  client.delete(todoID, async (e) => {
+                                    e && console.error(e);
+
+                                    refresh();
+                                  });
+                              };
+
+                              return (
+                                <TodoCard
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  style={getItemStyle(
+                                    provided.draggableProps.style
+                                  )}
+                                >
+                                  <SwipeableListItem
+                                    swipeLeft={{
+                                      content: (
+                                        <SwipeActionWrapper>
+                                          <FaTrash />
+                                          <span>Delete</span>
+                                        </SwipeActionWrapper>
+                                      ),
+                                      action: deleteTodo,
+                                    }}
+                                    swipeRight={{
+                                      content: (
+                                        <SwipeActionWrapper>
+                                          <FaRegCheckSquare />
+                                          <span>Select</span>
+                                        </SwipeActionWrapper>
+                                      ),
+                                      action: () =>
+                                        console.log("Selecting", todo.getId()),
+                                    }}
+                                    key={i}
+                                  >
+                                    <TodoCardContent>
+                                      <Box>
+                                        {todo.getTitle() != "" && (
+                                          <Heading>{todo.getTitle()}</Heading>
+                                        )}
+                                        {todo.getBody() != "" && (
+                                          <Text>{todo.getBody()}</Text>
+                                        )}
+                                      </Box>
+
+                                      <IconButton onClick={deleteTodo} inverted>
+                                        <FaTimes />
+                                      </IconButton>
+                                    </TodoCardContent>
+                                  </SwipeableListItem>
+                                </TodoCard>
+                              );
+                            }}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </SwipeableList>
+                    </ListWrapper>
+                  )}
+                </Droppable>
+              </DragDropContext>
+
+              <Toolbar>
+                <IconButton>
+                  <FaRegCheckSquare />
+                </IconButton>
+                <AddNoteButton as={Link} to="/new">
+                  <FaPlus />
+                  <span>Add Todo</span>
+                </AddNoteButton>
+                <IconButton>
+                  <FaCog />
+                </IconButton>
+              </Toolbar>
+            </Route>
+          </Switch>
+        </BrowserRouter>
       </ThemeUIThemeProvider>
     </StyledComponentsThemeProvider>
   );

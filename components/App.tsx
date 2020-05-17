@@ -31,6 +31,7 @@ import {
   withRouter,
 } from "react-router-dom";
 import { Label, Input, Textarea } from "@rebass/forms";
+import UpdateTodo from "./UpdateTodo";
 
 const withHover = (
   center: boolean,
@@ -71,6 +72,13 @@ const TodoCardContent = styled(Box)`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+`;
+
+const TodoLink = styled(Link)`
+  text-decoration: inherit;
+  color: inherit;
+  overflow-x: auto;
+  flex: 1;
 `;
 
 const ListWrapper = styled(Box)<{ theme: Theme }>`
@@ -247,7 +255,7 @@ const getItemStyle = (draggableStyle: any) => {
   };
 };
 
-const Loading = ({ loading }: { loading?: boolean }) => (
+export const Loading = ({ loading }: { loading?: boolean }) => (
   <Transition
     items={loading}
     from={{ opacity: 0 }}
@@ -292,6 +300,15 @@ export default () => {
       <ThemeUIThemeProvider theme={theme}>
         <BrowserRouter>
           <Switch>
+            <Route
+              path="/todos/:id"
+              render={(props) => (
+                <UpdateTodo
+                  client={client}
+                  id={parseInt(props.match.params.id)}
+                />
+              )}
+            />
             <Route path="/new">
               {withRouter((props) => (
                 <Container>
@@ -320,7 +337,7 @@ export default () => {
 
                       setLoading(true);
 
-                      client.create(todo, async (e) => {
+                      client.create(todo, (e) => {
                         e && console.error(e);
 
                         refresh();
@@ -411,7 +428,7 @@ export default () => {
                                 if (shouldDelete) {
                                   setLoading(true);
 
-                                  client.delete(todoID, async (e) => {
+                                  client.delete(todoID, (e) => {
                                     e && console.error(e);
 
                                     refresh();
@@ -450,7 +467,10 @@ export default () => {
                                     }}
                                     key={i}
                                   >
-                                    <TodoCardContent>
+                                    <TodoCardContent
+                                      as={TodoLink}
+                                      to={`/todos/${todo.getId()}`}
+                                    >
                                       <Box overflowX="auto" mr={3}>
                                         {todo.getTitle() != "" && (
                                           <Heading>{todo.getTitle()}</Heading>
@@ -460,7 +480,14 @@ export default () => {
                                         )}
                                       </Box>
 
-                                      <IconButton onClick={deleteTodo} inverted>
+                                      <IconButton
+                                        onClick={(e) => {
+                                          e.preventDefault();
+
+                                          deleteTodo();
+                                        }}
+                                        inverted
+                                      >
                                         <FaTimes />
                                       </IconButton>
                                     </TodoCardContent>

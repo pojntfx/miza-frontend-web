@@ -2274,6 +2274,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rebass/forms@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "@rebass/forms@npm:4.0.6"
+  dependencies:
+    reflexbox: ^4.0.6
+  checksum: 3/72408de036e14287eea0109e28dd44fa454f0c7210d251a1b7e68838fae28614e1d9500ebb21988869244b0812a5c2733aba0ee37c14a945625b261ec248ba6c
+  languageName: node
+  linkType: hard
+
 "@rebass/preset@npm:^4.0.5":
   version: 4.0.5
   resolution: "@rebass/preset@npm:4.0.5"
@@ -2387,7 +2396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@styled-system/should-forward-prop@npm:^5.0.0, @styled-system/should-forward-prop@npm:^5.1.2":
+"@styled-system/should-forward-prop@npm:^5.0.0, @styled-system/should-forward-prop@npm:^5.1.2, @styled-system/should-forward-prop@npm:^5.1.5":
   version: 5.1.5
   resolution: "@styled-system/should-forward-prop@npm:5.1.5"
   dependencies:
@@ -2705,7 +2714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/rebass@npm:^4.0.6":
+"@types/rebass@npm:*, @types/rebass@npm:^4.0.6":
   version: 4.0.6
   resolution: "@types/rebass@npm:4.0.6"
   dependencies:
@@ -2714,6 +2723,17 @@ __metadata:
     "@types/styled-system": "*"
     "@types/styled-system__css": "*"
   checksum: 3/bb8c11e8ea0ad0bb958d1bc8238c984a70fed076e4aa20d7a3be024591321f3452303ad6b93d48596a5400ccfe701924065fa750272ecf33919ee2d8657be746
+  languageName: node
+  linkType: hard
+
+"@types/rebass__forms@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@types/rebass__forms@npm:4.0.2"
+  dependencies:
+    "@types/react": "*"
+    "@types/rebass": "*"
+    "@types/styled-system": "*"
+  checksum: 3/8d74cfab1c97c30b4ea3c083358eedbae7e197709cc2a1fe9162d72b579c01c1941f6221f9fb4abb01001a211bc59475d0267c6efa7e1f416b187d54ed232d0f
   languageName: node
   linkType: hard
 
@@ -6693,8 +6713,10 @@ __metadata:
     "@emotion/core": ^10.0.28
     "@emotion/styled": ^10.0.27
     "@improbable-eng/grpc-web": ^0.12.0
+    "@rebass/forms": ^4.0.6
     "@rebass/preset": ^4.0.5
     "@sandstreamdev/react-swipeable-list": ^0.5.0
+    "@styled-system/should-forward-prop": ^5.1.5
     "@theme-ui/css": ^0.3.1
     "@types/google-protobuf": ^3.7.2
     "@types/node": ^14.0.1
@@ -6704,6 +6726,7 @@ __metadata:
     "@types/react-icons": ^3.0.0
     "@types/react-router-dom": ^5.1.5
     "@types/rebass": ^4.0.6
+    "@types/rebass__forms": ^4.0.2
     "@types/styled-components": ^5.1.0
     "@types/theme-ui": ^0.3.2
     "@yarnpkg/pnpify": ^2.0.0-rc.22

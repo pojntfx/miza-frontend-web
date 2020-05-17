@@ -1,10 +1,10 @@
 import * as React from "react";
 import { TodosClient } from "../api/generated/api/todos_pb_service";
-import { Todo, TodoID } from "../api/generated/api/todos_pb";
+import { Todo, TodoID, NewTodo } from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
-import { Heading, Text, Card, Box, Button } from "rebass";
+import { Heading, Text, Card, Box, Button, Flex } from "rebass";
 import styled from "styled-components";
 import {
   FaPlus,
@@ -23,7 +23,14 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { SyncLoader } from "react-spinners";
 import { Transition } from "react-spring/renderprops";
 import { LoaderSizeProps } from "react-spinners/interfaces";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link,
+  withRouter,
+} from "react-router-dom";
+import { Label, Input, Textarea } from "@rebass/forms";
 
 const withHover = (
   center: boolean,
@@ -161,6 +168,8 @@ const AddNoteButton = styled(Button)`
 `;
 
 const IconButton = styled(Button)<{ theme: Theme; inverted?: boolean }>`
+  min-width: initial !important;
+
   cursor: pointer;
   display: flex !important;
   justify-content: center;
@@ -238,6 +247,27 @@ const getItemStyle = (draggableStyle: any) => {
   };
 };
 
+const Loading = ({ loading }: { loading?: boolean }) => (
+  <Transition
+    items={loading}
+    from={{ opacity: 0 }}
+    enter={{ opacity: 1 }}
+    leave={{ opacity: 0 }}
+  >
+    {(loading) =>
+      loading &&
+      ((props) => (
+        <SyncLoader
+          color="#ff6a00"
+          size={7.5}
+          loading={loading}
+          css={(props as unknown) as LoaderSizeProps["css"]}
+        />
+      ))
+    }
+  </Transition>
+);
+
 export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
@@ -263,23 +293,84 @@ export default () => {
         <BrowserRouter>
           <Switch>
             <Route path="/new">
-              <Container>
-                <Header>
-                  <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-                    New Todo
-                  </Heading>
-                  <Link to="/">
-                    <IconButton inverted>
-                      <FaTimes />
-                    </IconButton>
-                  </Link>
-                </Header>
+              {withRouter((props) => (
+                <Container>
+                  <Header>
+                    <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
+                      New Todo
+                    </Heading>
+                    <Flex>
+                      <Loading loading={loading} />
+                      <Link to="/">
+                        <IconButton inverted>
+                          <FaTimes />
+                        </IconButton>
+                      </Link>
+                    </Flex>
+                  </Header>
 
-                <HoverButton>
-                  <FaSave />
-                  <span>Create</span>
-                </HoverButton>
-              </Container>
+                  <Box
+                    as="form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+
+                      const todo = new NewTodo();
+                      todo.setTitle((e.target as any).title.value);
+                      todo.setBody((e.target as any).body.value);
+
+                      setLoading(true);
+
+                      client.create(todo, async (e) => {
+                        e && console.error(e);
+
+                        refresh();
+
+                        return props.history.push("/");
+                      });
+                    }}
+                    pt={0}
+                    pb={5}
+                  >
+                    <Flex mx={-2} mb={3}>
+                      <Box width={1} px={2}>
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                          id="title"
+                          name="title"
+                          defaultValue=""
+                          sx={{
+                            borderRadius: 4,
+                          }}
+                        />
+                      </Box>
+                    </Flex>
+                    <Flex mx={-2} mb={5}>
+                      <Box width={1} px={2}>
+                        <Label htmlFor="body">Body</Label>
+                        <Textarea
+                          id="body"
+                          name="body"
+                          defaultValue=""
+                          autoFocus
+                          required
+                          sx={{
+                            borderRadius: 4,
+                            resize: "vertical",
+                          }}
+                        />
+                      </Box>
+                    </Flex>
+                    <Flex mx={-2} flexWrap="wrap">
+                      <Box px={2} ml="auto">
+                        <HoverButton>
+                          <FaSave />
+                          <span>Create</span>
+                        </HoverButton>
+                      </Box>
+                    </Flex>
+                  </Box>
+                </Container>
+              ))}
             </Route>
             <Route path="/">
               <Container>
@@ -287,24 +378,7 @@ export default () => {
                   <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
                     Todos
                   </Heading>
-                  <Transition
-                    items={loading}
-                    from={{ opacity: 0 }}
-                    enter={{ opacity: 1 }}
-                    leave={{ opacity: 0 }}
-                  >
-                    {(loading) =>
-                      loading &&
-                      ((props) => (
-                        <SyncLoader
-                          color="#ff6a00"
-                          size={7.5}
-                          loading={loading}
-                          css={(props as unknown) as LoaderSizeProps["css"]}
-                        />
-                      ))
-                    }
-                  </Transition>
+                  <Loading loading={loading} />
                 </Header>
               </Container>
               <DragDropContext
@@ -334,12 +408,15 @@ export default () => {
                                   `Do you want to delete todo ${todo.getTitle()}?`
                                 );
 
-                                shouldDelete &&
+                                if (shouldDelete) {
+                                  setLoading(true);
+
                                   client.delete(todoID, async (e) => {
                                     e && console.error(e);
 
                                     refresh();
                                   });
+                                }
                               };
 
                               return (
@@ -374,7 +451,7 @@ export default () => {
                                     key={i}
                                   >
                                     <TodoCardContent>
-                                      <Box>
+                                      <Box overflowX="auto" mr={3}>
                                         {todo.getTitle() != "" && (
                                           <Heading>{todo.getTitle()}</Heading>
                                         )}

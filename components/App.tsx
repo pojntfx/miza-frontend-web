@@ -32,6 +32,7 @@ import {
 } from "react-router-dom";
 import { Label, Input, Textarea } from "@rebass/forms";
 import UpdateTodo from "./UpdateTodo";
+import { ActionBar } from "./ActionBar";
 
 const withHover = (
   center: boolean,
@@ -146,10 +147,6 @@ const Toolbar = styled(Box)`
 `;
 
 const AddNoteButton = styled(Button)`
-  position: fixed;
-  bottom: ${({ theme }: { theme: Theme }) => theme.space[2]}rem;
-  left: 50%;
-  transform: translateX(-50%);
   background: #ff8833 !important;
   padding: ${({ theme }: { theme: Theme }) => (theme.space[1] as number) / 2}rem
     ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
@@ -504,18 +501,24 @@ export default () => {
                 </Droppable>
               </DragDropContext>
 
-              <Toolbar>
-                <IconButton>
-                  <FaRegCheckSquare />
-                </IconButton>
-                <AddNoteButton as={Link} to="/new">
-                  <FaPlus />
-                  <span>Add Todo</span>
-                </AddNoteButton>
-                <IconButton>
-                  <FaCog />
-                </IconButton>
-              </Toolbar>
+              <ActionBar
+                start={
+                  <IconButton>
+                    <FaRegCheckSquare />
+                  </IconButton>
+                }
+                center={
+                  <AddNoteButton as={Link} to="/new">
+                    <FaPlus />
+                    <span>Add Todo</span>
+                  </AddNoteButton>
+                }
+                end={
+                  <IconButton>
+                    <FaCog />
+                  </IconButton>
+                }
+              />
             </Route>
           </Switch>
         </BrowserRouter>

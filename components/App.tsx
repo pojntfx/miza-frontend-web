@@ -31,6 +31,7 @@ import { Header } from "./Header";
 import { SwipeNDragList } from "./SwipeNDragList";
 import { SwipeNDragItem } from "./SwipeNDragItem";
 import { TodoSummary } from "./TodoSummary";
+import { TodoForm } from "./TodoForm";
 
 const withHover = (
   center: boolean,
@@ -261,8 +262,9 @@ export default () => {
                       </Flex>
                     }
                   />
-                  <Box
-                    as="form"
+                  <TodoForm
+                    title=""
+                    body=""
                     onSubmit={(e) => {
                       e.preventDefault();
 
@@ -280,47 +282,7 @@ export default () => {
                         return props.history.push("/");
                       });
                     }}
-                    pt={0}
-                    pb={5}
-                  >
-                    <Flex mx={-2} mb={3}>
-                      <Box width={1} px={2}>
-                        <Label htmlFor="title">Title</Label>
-                        <Input
-                          id="title"
-                          name="title"
-                          defaultValue=""
-                          sx={{
-                            borderRadius: 4,
-                          }}
-                        />
-                      </Box>
-                    </Flex>
-                    <Flex mx={-2} mb={5}>
-                      <Box width={1} px={2}>
-                        <Label htmlFor="body">Body</Label>
-                        <Textarea
-                          id="body"
-                          name="body"
-                          defaultValue=""
-                          autoFocus
-                          required
-                          sx={{
-                            borderRadius: 4,
-                            resize: "vertical",
-                          }}
-                        />
-                      </Box>
-                    </Flex>
-                    <Flex mx={-2} flexWrap="wrap">
-                      <Box px={2} ml="auto">
-                        <HoverButton>
-                          <FaSave />
-                          <span>Create</span>
-                        </HoverButton>
-                      </Box>
-                    </Flex>
-                  </Box>
+                  />
                 </Container>
               ))}
             </Route>

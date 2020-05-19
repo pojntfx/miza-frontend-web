@@ -34,6 +34,7 @@ import { Label, Input, Textarea } from "@rebass/forms";
 import UpdateTodo from "./UpdateTodo";
 import { ActionBar } from "./ActionBar";
 import { Header } from "./Header";
+import { SwipeNDragList } from "./SwipeNDragList";
 
 const withHover = (
   center: boolean,
@@ -381,112 +382,98 @@ export default () => {
                   end={<Loading loading={loading} />}
                 ></Header>
               </Container>
-              <DragDropContext
+              <SwipeNDragList
                 onDragEnd={(d) =>
                   console.log("Reordering", parseInt(d.draggableId))
                 }
+                droppableId="todos"
               >
-                <Droppable droppableId="droppable">
-                  {(provided) => (
-                    <ListWrapper
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                    >
-                      <SwipeableList>
-                        {todos.map((todo, i) => (
-                          <Draggable
-                            draggableId={todo.getId().toString()}
-                            index={i}
-                            key={todo.getId()}
-                          >
-                            {(provided) => {
-                              const deleteTodo = () => {
-                                const todoID = new TodoID();
-                                todoID.setId(todo.getId());
+                {todos.map((todo, i) => (
+                  <Draggable
+                    draggableId={todo.getId().toString()}
+                    index={i}
+                    key={todo.getId()}
+                  >
+                    {(provided) => {
+                      const deleteTodo = () => {
+                        const todoID = new TodoID();
+                        todoID.setId(todo.getId());
 
-                                const shouldDelete = confirm(
-                                  `Do you want to delete todo ${todo.getTitle()}?`
-                                );
+                        const shouldDelete = confirm(
+                          `Do you want to delete todo ${todo.getTitle()}?`
+                        );
 
-                                if (shouldDelete) {
-                                  setLoading(true);
+                        if (shouldDelete) {
+                          setLoading(true);
 
-                                  client.delete(todoID, (e) => {
-                                    e && console.error(e);
+                          client.delete(todoID, (e) => {
+                            e && console.error(e);
 
-                                    refresh();
-                                  });
-                                }
-                              };
+                            refresh();
+                          });
+                        }
+                      };
 
-                              return (
-                                <TodoCard
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={getItemStyle(
-                                    provided.draggableProps.style
-                                  )}
-                                >
-                                  <SwipeableListItem
-                                    swipeLeft={{
-                                      content: (
-                                        <SwipeActionWrapper>
-                                          <FaTrash />
-                                          <span>Delete</span>
-                                        </SwipeActionWrapper>
-                                      ),
-                                      action: deleteTodo,
-                                    }}
-                                    swipeRight={{
-                                      content: (
-                                        <SwipeActionWrapper>
-                                          <FaRegCheckSquare />
-                                          <span>Select</span>
-                                        </SwipeActionWrapper>
-                                      ),
-                                      action: () =>
-                                        console.log("Selecting", todo.getId()),
-                                    }}
-                                    key={i}
-                                  >
-                                    <TodoCardContent
-                                      as={TodoLink}
-                                      to={`/todos/${todo.getId()}`}
-                                    >
-                                      <Box overflowX="auto" mr={3}>
-                                        {todo.getTitle() != "" && (
-                                          <Heading>{todo.getTitle()}</Heading>
-                                        )}
-                                        {todo.getBody() != "" && (
-                                          <Text>{todo.getBody()}</Text>
-                                        )}
-                                      </Box>
-
-                                      <IconButton
-                                        onClick={(e) => {
-                                          e.preventDefault();
-
-                                          deleteTodo();
-                                        }}
-                                        inverted
-                                      >
-                                        <FaTimes />
-                                      </IconButton>
-                                    </TodoCardContent>
-                                  </SwipeableListItem>
-                                </TodoCard>
-                              );
+                      return (
+                        <TodoCard
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(provided.draggableProps.style)}
+                        >
+                          <SwipeableListItem
+                            swipeLeft={{
+                              content: (
+                                <SwipeActionWrapper>
+                                  <FaTrash />
+                                  <span>Delete</span>
+                                </SwipeActionWrapper>
+                              ),
+                              action: deleteTodo,
                             }}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </SwipeableList>
-                    </ListWrapper>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                            swipeRight={{
+                              content: (
+                                <SwipeActionWrapper>
+                                  <FaRegCheckSquare />
+                                  <span>Select</span>
+                                </SwipeActionWrapper>
+                              ),
+                              action: () =>
+                                console.log("Selecting", todo.getId()),
+                            }}
+                            key={i}
+                          >
+                            <TodoCardContent
+                              as={TodoLink}
+                              to={`/todos/${todo.getId()}`}
+                            >
+                              <Box overflowX="auto" mr={3}>
+                                {todo.getTitle() != "" && (
+                                  <Heading>{todo.getTitle()}</Heading>
+                                )}
+                                {todo.getBody() != "" && (
+                                  <Text>{todo.getBody()}</Text>
+                                )}
+                              </Box>
 
+                              <IconButton
+                                onClick={(e) => {
+                                  e.preventDefault();
+
+                                  deleteTodo();
+                                }}
+                                inverted
+                              >
+                                <FaTimes />
+                              </IconButton>
+                            </TodoCardContent>
+                          </SwipeableListItem>
+                        </TodoCard>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+              </SwipeNDragList>
               <ActionBar
                 start={
                   <IconButton>

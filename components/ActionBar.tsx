@@ -31,7 +31,7 @@ const Toolbar = styled(Box)<{ theme: Theme }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: ${({ theme }: { theme: any }) => theme.shadows.card};
+  box-shadow: ${({ theme }) => theme.shadows.card};
 
   > :nth-child(2) {
     position: fixed;

@@ -33,6 +33,7 @@ import {
 import { Label, Input, Textarea } from "@rebass/forms";
 import UpdateTodo from "./UpdateTodo";
 import { ActionBar } from "./ActionBar";
+import { Header } from "./Header";
 
 const withHover = (
   center: boolean,
@@ -124,26 +125,6 @@ const Container = styled(Box)<{ theme: Theme }>`
   max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
   margin: 0 auto !important;
   padding: 0 ${({ theme }) => theme.space[1]}rem;
-`;
-
-const Header = styled(Box)<{ theme: Theme }>`
-  padding-top: ${({ theme }) => theme.space[1]}rem !important;
-  padding-bottom: ${({ theme }) => theme.space[1]}rem !important;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Toolbar = styled(Box)`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: ${({ theme }: { theme: Theme }) => theme.colors.primary};
-  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: ${({ theme }: { theme: any }) => theme.shadows.card};
 `;
 
 const AddNoteButton = styled(Button)`
@@ -309,20 +290,23 @@ export default () => {
             <Route path="/new">
               {withRouter((props) => (
                 <Container>
-                  <Header>
-                    <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-                      New Todo
-                    </Heading>
-                    <Flex>
-                      <Loading loading={loading} />
-                      <Link to="/">
-                        <IconButton inverted>
-                          <FaTimes />
-                        </IconButton>
-                      </Link>
-                    </Flex>
-                  </Header>
-
+                  <Header
+                    start={
+                      <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
+                        New Todo
+                      </Heading>
+                    }
+                    end={
+                      <Flex>
+                        <Loading loading={loading} />
+                        <Link to="/">
+                          <IconButton inverted>
+                            <FaTimes />
+                          </IconButton>
+                        </Link>
+                      </Flex>
+                    }
+                  />
                   <Box
                     as="form"
                     onSubmit={(e) => {
@@ -388,12 +372,14 @@ export default () => {
             </Route>
             <Route path="/">
               <Container>
-                <Header>
-                  <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-                    Todos
-                  </Heading>
-                  <Loading loading={loading} />
-                </Header>
+                <Header
+                  start={
+                    <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
+                      Todos
+                    </Heading>
+                  }
+                  end={<Loading loading={loading} />}
+                ></Header>
               </Container>
               <DragDropContext
                 onDragEnd={(d) =>

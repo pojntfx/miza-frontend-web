@@ -2704,7 +2704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^16.9.35":
+"@types/react@npm:*, @types/react@npm:^16.9.8":
   version: 16.9.35
   resolution: "@types/react@npm:16.9.35"
   dependencies:
@@ -6720,7 +6720,7 @@ __metadata:
     "@theme-ui/css": ^0.3.1
     "@types/google-protobuf": ^3.7.2
     "@types/node": ^14.0.1
-    "@types/react": ^16.9.35
+    "@types/react": ^16.9.8
     "@types/react-beautiful-dnd": ^12.1.2
     "@types/react-dom": ^16.9.8
     "@types/react-icons": ^3.0.0

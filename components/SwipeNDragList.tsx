@@ -13,6 +13,7 @@ import {
   SwipeableList,
   IBaseSwipeableListProps,
 } from "@sandstreamdev/react-swipeable-list";
+import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 
 interface ISwipeNDragListProps {
   onDragEnd(result: DropResult, provided: ResponderProvided): void;

@@ -14,12 +14,6 @@ import {
   FaTimes,
   FaSave,
 } from "react-icons/fa";
-import {
-  SwipeableList,
-  SwipeableListItem,
-} from "@sandstreamdev/react-swipeable-list";
-import "@sandstreamdev/react-swipeable-list/dist/styles.css";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { SyncLoader } from "react-spinners";
 import { Transition } from "react-spring/renderprops";
 import { LoaderSizeProps } from "react-spinners/interfaces";
@@ -36,6 +30,7 @@ import { ActionBar } from "./ActionBar";
 import { Header } from "./Header";
 import { SwipeNDragList } from "./SwipeNDragList";
 import { SwipeNDragItem } from "./SwipeNDragItem";
+import { TodoSummary } from "./TodoSummary";
 
 const withHover = (
   center: boolean,
@@ -56,71 +51,11 @@ const withHover = (
     ${shadow ? "background: rgba(0, 0, 0, 0.13);" : ""}
   }`;
 
-const TodoCard = styled(Card)<{ theme: Theme; style: any }>`
-  padding: 0 !important;
-  margin-left: ${({ theme }) => theme.space[1]}rem !important;
-  margin-right: ${({ theme }) => theme.space[1]}rem !important;
-  border-radius: ${({ theme }) => theme.space[1]}rem !important;
-  margin-bottom: ${({ theme }) => theme.space[1]}rem !important;
-
-  &:first-of-type {
-    margin-top: ${({ theme }) => theme.space[1]}rem !important;
-  }
-
-  ${withHover(false, true)}
-`;
-
-const TodoCardContent = styled(Box)`
-  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
 const TodoLink = styled(Link)`
   text-decoration: inherit;
   color: inherit;
   overflow-x: auto;
   flex: 1;
-`;
-
-const ListWrapper = styled(Box)<{ theme: Theme }>`
-  margin-bottom: 4rem !important;
-
-  > * {
-    margin-top: -${({ theme }) => theme.space[1]}rem !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    > * {
-      width: calc(100% - ${({ theme }) => (theme.space[1] as number) * 2}rem);
-      max-width: calc(
-        ${({ theme }) => (theme.space[8] as number) * 4}px -
-          ${({ theme }) => (theme.space[1] as number) * 2}rem
-      );
-
-      > * {
-        > * {
-          border-radius: ${({ theme }: { theme: Theme }) =>
-            theme.space[1]}rem !important;
-
-          &:first-of-type {
-            background: red !important;
-          }
-
-          &:nth-of-type(2) {
-            background: ${({ theme }) => theme.colors.primary} !important;
-          }
-
-          &:last-of-type {
-            background: transparent !important;
-          }
-        }
-      }
-    }
-  }
 `;
 
 const Container = styled(Box)<{ theme: Theme }>`
@@ -429,30 +364,17 @@ export default () => {
                     endAction={() => console.log("Selecting", todo.getId())}
                   >
                     {() => (
-                      <TodoCardContent
+                      <TodoSummary
+                        title={todo.getTitle()}
+                        body={todo.getBody()}
+                        onClick={(e) => {
+                          e.preventDefault();
+
+                          deleteTodo(todo.getId(), todo.getTitle());
+                        }}
                         as={TodoLink}
                         to={`/todos/${todo.getId()}`}
-                      >
-                        <Box overflowX="auto" mr={3}>
-                          {todo.getTitle() != "" && (
-                            <Heading>{todo.getTitle()}</Heading>
-                          )}
-                          {todo.getBody() != "" && (
-                            <Text>{todo.getBody()}</Text>
-                          )}
-                        </Box>
-
-                        <IconButton
-                          onClick={(e) => {
-                            e.preventDefault();
-
-                            deleteTodo(todo.getId(), todo.getTitle());
-                          }}
-                          inverted
-                        >
-                          <FaTimes />
-                        </IconButton>
-                      </TodoCardContent>
+                      />
                     )}
                   </SwipeNDragItem>
                 ))}

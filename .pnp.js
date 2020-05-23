@@ -114,6 +114,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"
       ],
       [
+        "browser-headers",
+        "npm:0.4.1"
+      ],
+      [
         "google-protobuf",
         "npm:3.12.0-rc.2"
       ],
@@ -136,6 +140,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "react-dom",
         "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"
+      ],
+      [
+        "react-google-login",
+        "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.20"
       ],
       [
         "react-icons",
@@ -206,12 +214,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
+            ["browser-headers", "npm:0.4.1"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
             ["parcel", "npm:2.0.0-nightly.270"],
             ["prop-types", "npm:15.7.2"],
             ["react", "npm:16.13.1"],
             ["react-beautiful-dnd", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:13.0.0"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
+            ["react-google-login", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.20"],
             ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
             ["react-is", "npm:16.13.1"],
             ["react-router-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.2.0"],
@@ -7986,12 +7996,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
+            ["browser-headers", "npm:0.4.1"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
             ["parcel", "npm:2.0.0-nightly.270"],
             ["prop-types", "npm:15.7.2"],
             ["react", "npm:16.13.1"],
             ["react-beautiful-dnd", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:13.0.0"],
             ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"],
+            ["react-google-login", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.20"],
             ["react-icons", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:3.10.0"],
             ["react-is", "npm:16.13.1"],
             ["react-router-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.2.0"],
@@ -9599,6 +9611,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
           "packagePeers": [
             "react"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["react-google-login", [
+        ["virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.20", {
+          "packageLocation": "./.yarn/$$virtual/react-google-login-virtual-3a16fac7fc/0/cache/react-google-login-npm-5.1.20-87588f84c3-3.zip/node_modules/react-google-login/",
+          "packageDependencies": [
+            ["react-google-login", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.20"],
+            ["@types/react", "npm:16.9.35"],
+            ["prop-types", "npm:15.7.2"],
+            ["react", "npm:16.13.1"],
+            ["react-dom", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:16.13.1"]
+          ],
+          "packagePeers": [
+            "react",
+            "react-dom"
           ],
           "linkType": "HARD",
         }]

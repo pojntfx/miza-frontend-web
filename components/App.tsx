@@ -4,7 +4,7 @@ import { Todo, TodoID, NewTodo } from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
-import { Heading, Text, Card, Box, Button, Flex } from "rebass";
+import { Heading, Box, Button, Flex } from "rebass";
 import styled from "styled-components";
 import {
   FaPlus,
@@ -12,7 +12,6 @@ import {
   FaCog,
   FaTrash,
   FaTimes,
-  FaSave,
 } from "react-icons/fa";
 import { SyncLoader } from "react-spinners";
 import { Transition } from "react-spring/renderprops";
@@ -24,7 +23,6 @@ import {
   Link,
   withRouter,
 } from "react-router-dom";
-import { Label, Input, Textarea } from "@rebass/forms";
 import UpdateTodo from "./UpdateTodo";
 import { ActionBar } from "./ActionBar";
 import { Header } from "./Header";
@@ -32,6 +30,8 @@ import { SwipeNDragList } from "./SwipeNDragList";
 import { SwipeNDragItem } from "./SwipeNDragItem";
 import { TodoSummary } from "./TodoSummary";
 import { TodoForm } from "./TodoForm";
+import { GoogleLogin } from "react-google-login";
+import { BrowserHeaders } from "browser-headers";
 
 const withHover = (
   center: boolean,
@@ -130,45 +130,9 @@ const SwipeActionWrapper = styled(Box)<{ theme: Theme }>`
   }
 `;
 
-const HoverButton = styled(Button)<{ theme: Theme }>`
-  ${withHover(false, true)}
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }: { theme: Theme }) => (theme.space[1] as number) / 2}rem
-    ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-
-  & > *:last-child:not(:first-child) {
-    margin-left: ${({ theme }: { theme: Theme }) =>
-      (theme.space[1] as number) / 2}rem;
-  }
-
-  &:active {
-    background: #00406e;
-  }
-`;
-
 const theme = {
   ...preset,
   space: [0, 1, 2, 4, 8, 16, 32, 64, 128],
-};
-
-const getItemStyle = (draggableStyle: any) => {
-  const { transform } = draggableStyle;
-  let activeTransform = {};
-  if (transform) {
-    activeTransform = {
-      transform: `translate(0, ${transform.substring(
-        transform.indexOf(",") + 1,
-        transform.indexOf(")")
-      )})`,
-    };
-  }
-  return {
-    ...draggableStyle,
-    ...activeTransform,
-  };
 };
 
 export const Loading = ({ loading }: { loading?: boolean }) => (
@@ -196,15 +160,22 @@ export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
   const [todos, setTodos] = React.useState<Todo[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [token, setToken] = React.useState("");
 
   const refreshTodos = () => {
     setLoading(true);
 
-    client.list(new Todo(), (e, res) => {
-      e ? console.error(e) : setTodos(res.getTodosList());
+    client.list(
+      new Todo(),
+      new BrowserHeaders({
+        Authorization: `Bearer ${token}`,
+      }),
+      (e, res) => {
+        e ? console.error(e) : setTodos(res.getTodosList());
 
-      setLoading(false);
-    });
+        setLoading(false);
+      }
+    );
   };
 
   const deleteTodo = (id: number, title: string) => {
@@ -216,19 +187,25 @@ export default () => {
     if (shouldDelete) {
       setLoading(true);
 
-      client.delete(todoID, (e) => {
-        e && console.error(e);
+      client.delete(
+        todoID,
+        new BrowserHeaders({
+          Authorization: `Bearer ${token}`,
+        }),
+        (e) => {
+          e && console.error(e);
 
-        refreshTodos();
-      });
+          refreshTodos();
+        }
+      );
     }
   };
 
   React.useEffect(() => {
-    refreshTodos();
-  }, []);
+    token && refreshTodos();
+  }, [token]);
 
-  return (
+  return token ? (
     <StyledComponentsThemeProvider theme={theme}>
       <ThemeUIThemeProvider theme={theme}>
         <BrowserRouter>
@@ -239,6 +216,7 @@ export default () => {
                 <UpdateTodo
                   client={client}
                   id={parseInt(props.match.params.id)}
+                  token={token}
                 />
               )}
             />
@@ -274,13 +252,19 @@ export default () => {
 
                       setLoading(true);
 
-                      client.create(todo, (e) => {
-                        e && console.error(e);
+                      client.create(
+                        todo,
+                        new BrowserHeaders({
+                          Authorization: `Bearer ${token}`,
+                        }),
+                        (e) => {
+                          e && console.error(e);
 
-                        refreshTodos();
+                          refreshTodos();
 
-                        return props.history.push("/");
-                      });
+                          return props.history.push("/");
+                        }
+                      );
                     }}
                   />
                 </Container>
@@ -364,5 +348,12 @@ export default () => {
         </BrowserRouter>
       </ThemeUIThemeProvider>
     </StyledComponentsThemeProvider>
+  ) : (
+    <GoogleLogin
+      onSuccess={(res) => setToken((res as any).tokenId)}
+      onFailure={(res) => console.error(res)}
+      clientId={process.env.GOOGLE_CLIENT_ID}
+      isSignedIn
+    />
   );
 };

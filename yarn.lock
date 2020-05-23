@@ -3410,7 +3410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-headers@npm:^0.4.0":
+"browser-headers@npm:^0.4.0, browser-headers@npm:^0.4.1":
   version: 0.4.1
   resolution: "browser-headers@npm:0.4.1"
   checksum: 3/268030ab33f2c7d80a9851bd9745b04299f6a82b912f40ea569a74d352381ad9c125b7999e45f90a153e08ebe27a6da9efc4f4835efd7a3f8276e81207573f5c
@@ -6730,12 +6730,14 @@ __metadata:
     "@types/styled-components": ^5.1.0
     "@types/theme-ui": ^0.3.2
     "@yarnpkg/pnpify": ^2.0.0-rc.22
+    browser-headers: ^0.4.1
     google-protobuf: ^3.12.0-rc.2
     parcel: nightly
     prop-types: ^15.7.2
     react: ^16.13.1
     react-beautiful-dnd: ^13.0.0
     react-dom: ^16.13.1
+    react-google-login: ^5.1.20
     react-icons: ^3.10.0
     react-is: ^16.13.1
     react-router-dom: ^5.2.0
@@ -7985,7 +7987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -8166,6 +8168,19 @@ __metadata:
   peerDependencies:
     react: ^16.13.1
   checksum: 3/fb5c3ad41360c6a8674f33916aa895d05e79d063d31a6963074220c1cda9e07e880799d01670b4ebd570b4d3457584f13cc898b5033a05641e8e801f5611607e
+  languageName: node
+  linkType: hard
+
+"react-google-login@npm:^5.1.20":
+  version: 5.1.20
+  resolution: "react-google-login@npm:5.1.20"
+  dependencies:
+    "@types/react": "*"
+    prop-types: ^15.6.0
+  peerDependencies:
+    react: ^16.0.0
+    react-dom: ^16.0.0
+  checksum: 3/0723599210b41d31a2abeb49f1203158884226e20008a7094747ea22174bc78ad3a459382ca2ca91c3b06f1957a0fed8cf6ed1bb2fd8ed389895c4537fcff10b
   languageName: node
   linkType: hard
 

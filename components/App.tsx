@@ -32,6 +32,9 @@ import { TodoSummary } from "./TodoSummary";
 import { TodoForm } from "./TodoForm";
 import { GoogleLogin } from "react-google-login";
 import { BrowserHeaders } from "browser-headers";
+import { Container } from "./Container";
+import { IconButton } from "./IconButton";
+import { NewTodoPage } from "../pages/NewTodoPage";
 
 const withHover = (
   center: boolean,
@@ -59,12 +62,6 @@ const TodoLink = styled(Link)`
   flex: 1;
 `;
 
-const Container = styled(Box)<{ theme: Theme }>`
-  max-width: ${({ theme }) => (theme.space[8] as number) * 4}px;
-  margin: 0 auto !important;
-  padding: 0 ${({ theme }) => theme.space[1]}rem;
-`;
-
 const AddNoteButton = styled(Button)`
   background: #ff8833 !important;
   padding: ${({ theme }: { theme: Theme }) => (theme.space[1] as number) / 2}rem
@@ -89,30 +86,6 @@ const AddNoteButton = styled(Button)`
   }
 
   ${withHover(true, true)}
-`;
-
-const IconButton = styled(Button)<{ theme: Theme; inverted?: boolean }>`
-  min-width: initial !important;
-
-  cursor: pointer;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-
-  transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-  transition-delay: initial;
-  transition-property: all;
-  cursor: pointer;
-
-  color: ${({ theme, inverted }) =>
-    inverted ? `${theme.colors.text} !important` : "inherit"};
-  background: transparent !important;
-
-  &:hover,
-  &:active {
-    color: ${({ inverted }) => (inverted ? "red" : "#d9d9d9")} !important;
-  }
 `;
 
 const SwipeActionWrapper = styled(Box)<{ theme: Theme }>`
@@ -222,52 +195,30 @@ export default () => {
             />
             <Route path="/new">
               {withRouter((props) => (
-                <Container>
-                  <Header
-                    start={
-                      <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-                        New Todo
-                      </Heading>
-                    }
-                    end={
-                      <Flex>
-                        <Loading loading={loading} />
-                        <Link to="/">
-                          <IconButton inverted>
-                            <FaTimes />
-                          </IconButton>
-                        </Link>
-                      </Flex>
-                    }
-                  />
-                  <TodoForm
-                    title=""
-                    body=""
-                    onSubmit={(e) => {
-                      e.preventDefault();
+                <NewTodoPage
+                  loading={loading}
+                  onSubmit={(title, body) => {
+                    const todo = new NewTodo();
+                    todo.setTitle(title);
+                    todo.setBody(body);
 
-                      const todo = new NewTodo();
-                      todo.setTitle((e.target as any).title.value);
-                      todo.setBody((e.target as any).body.value);
+                    setLoading(true);
 
-                      setLoading(true);
+                    client.create(
+                      todo,
+                      new BrowserHeaders({
+                        Authorization: `Bearer ${token}`,
+                      }),
+                      (e) => {
+                        e && console.error(e);
 
-                      client.create(
-                        todo,
-                        new BrowserHeaders({
-                          Authorization: `Bearer ${token}`,
-                        }),
-                        (e) => {
-                          e && console.error(e);
+                        refreshTodos();
 
-                          refreshTodos();
-
-                          return props.history.push("/");
-                        }
-                      );
-                    }}
-                  />
-                </Container>
+                        return props.history.push("/");
+                      }
+                    );
+                  }}
+                />
               ))}
             </Route>
             <Route path="/">

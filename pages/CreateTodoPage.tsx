@@ -8,12 +8,12 @@ import { IconButton } from "../components/IconButton";
 import { FaTimes } from "react-icons/fa";
 import { TodoForm } from "../components/TodoForm";
 
-interface INewTodoPageProps {
+interface ICreateTodoPageProps {
   loading?: boolean;
   onSubmit: (title: string, body: string) => void;
 }
 
-export const NewTodoPage: React.FC<INewTodoPageProps> = ({
+export const CreateTodoPage: React.FC<ICreateTodoPageProps> = ({
   loading,
   onSubmit,
   ...otherProps

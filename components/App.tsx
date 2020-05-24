@@ -34,74 +34,11 @@ import { GoogleLogin } from "react-google-login";
 import { BrowserHeaders } from "browser-headers";
 import { Container } from "./Container";
 import { IconButton } from "./IconButton";
-import { NewTodoPage } from "../pages/NewTodoPage";
-
-const withHover = (
-  center: boolean,
-  shadow?: boolean
-) => `transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-  transition-delay: initial;
-  transition-property: all;
-  cursor: pointer;
-
-  &:hover {
-    transform: ${center ? "translateX(-50%)" : ""} scale(1.05);
-    ${shadow ? "box-shadow: 0 0 15px rgba(0, 0, 0, 0.13);" : ""}
-  }
-
-  &:active {
-    transform: ${center ? "translateX(-50%)" : ""} scale(1);
-    ${shadow ? "background: rgba(0, 0, 0, 0.13);" : ""}
-  }`;
-
-const TodoLink = styled(Link)`
-  text-decoration: inherit;
-  color: inherit;
-  overflow-x: auto;
-  flex: 1;
-`;
-
-const AddNoteButton = styled(Button)`
-  background: #ff8833 !important;
-  padding: ${({ theme }: { theme: Theme }) => (theme.space[1] as number) / 2}rem
-    ${({ theme }: { theme: Theme }) => theme.space[1]}rem !important;
-  border-radius: ${({ theme }: { theme: Theme }) =>
-    theme.space[1]}rem !important;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  color: white !important;
-  text-decoration: none;
-  font-weight: bold;
-
-  & > *:first-child {
-    margin-right: ${({ theme }: { theme: Theme }) =>
-      (theme.space[1] as number) / 2}rem;
-  }
-
-  &:active {
-    background: #ff6a00 !important;
-  }
-
-  ${withHover(true, true)}
-`;
-
-const SwipeActionWrapper = styled(Box)<{ theme: Theme }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }: { theme: Theme }) => theme.space[1]}rem;
-  color: white !important;
-
-  > * {
-    &:first-of-type {
-      margin-right: ${({ theme }: { theme: Theme }) =>
-        (theme.space[1] as number) / 2}rem !important;
-    }
-  }
-`;
+import { CreateTodoPage } from "../pages/CreateTodoPage";
+import { SwipeActionWrapper } from "./SwipeActionWrapper";
+import { TodoLink } from "./TodoLink";
+import { AddNoteButton } from "./AddNoteButton";
+import { ListTodoPage } from "../pages/ListTodoPage";
 
 const theme = {
   ...preset,
@@ -193,9 +130,9 @@ export default () => {
                 />
               )}
             />
-            <Route path="/new">
+            <Route path="/create">
               {withRouter((props) => (
-                <NewTodoPage
+                <CreateTodoPage
                   loading={loading}
                   onSubmit={(title, body) => {
                     const todo = new NewTodo();
@@ -222,77 +159,24 @@ export default () => {
               ))}
             </Route>
             <Route path="/">
-              <Container>
-                <Header
-                  start={
-                    <Heading fontSize={[5, 6, 7]} color="primary" as="h1">
-                      Todos
-                    </Heading>
-                  }
-                  end={<Loading loading={loading} />}
-                ></Header>
-              </Container>
-              <SwipeNDragList
-                onDragEnd={(d) =>
-                  console.log("Reordering", parseInt(d.draggableId))
+              <ListTodoPage
+                onDelete={(id) =>
+                  deleteTodo(
+                    id,
+                    todos.find((todo) => todo.getId() == id).getTitle() ||
+                      todos.find((todo) => todo.getId() == id).getBody()
+                  )
                 }
-                droppableId="todos"
-              >
-                {todos.map((todo, i) => (
-                  <SwipeNDragItem
-                    key={todo.getId()}
-                    draggableId={todo.getId().toString()}
-                    index={i}
-                    startItem={
-                      <SwipeActionWrapper>
-                        <FaTrash />
-                        <span>Delete</span>
-                      </SwipeActionWrapper>
-                    }
-                    startAction={() =>
-                      deleteTodo(todo.getId(), todo.getTitle())
-                    }
-                    endItem={
-                      <SwipeActionWrapper>
-                        <FaRegCheckSquare />
-                        <span>Select</span>
-                      </SwipeActionWrapper>
-                    }
-                    endAction={() => console.log("Selecting", todo.getId())}
-                  >
-                    {() => (
-                      <TodoSummary
-                        title={todo.getTitle()}
-                        body={todo.getBody()}
-                        onClick={(e) => {
-                          e.preventDefault();
-
-                          deleteTodo(todo.getId(), todo.getTitle());
-                        }}
-                        as={TodoLink}
-                        to={`/todos/${todo.getId()}`}
-                      />
-                    )}
-                  </SwipeNDragItem>
-                ))}
-              </SwipeNDragList>
-              <ActionBar
-                start={
-                  <IconButton>
-                    <FaRegCheckSquare />
-                  </IconButton>
-                }
-                center={
-                  <AddNoteButton as={Link} to="/new">
-                    <FaPlus />
-                    <span>Add Todo</span>
-                  </AddNoteButton>
-                }
-                end={
-                  <IconButton>
-                    <FaCog />
-                  </IconButton>
-                }
+                onReorder={(id) => console.log(`Reordering ${id}`)}
+                onSelect={(id) => console.log(`Selecting ${id}`)}
+                todos={todos.map((todo) => ({
+                  id: todo.getId(),
+                  title: todo.getTitle(),
+                  body: todo.getBody(),
+                }))}
+                loading={loading}
+                createPath={() => "/create"}
+                getPath={(id) => `/todos/${id}`}
               />
             </Route>
           </Switch>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { TodosClient } from "../api/generated/api/todos_pb_service";
 import { Todo, TodoID, NewTodo } from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
-import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
+import { ThemeProvider as ThemeUIThemeProvider } from "theme-ui";
 import preset from "@rebass/preset";
 import { BrowserRouter, Switch, Route, withRouter } from "react-router-dom";
 import { GoogleLogin } from "react-google-login";
@@ -22,6 +22,7 @@ export default () => {
   const [todos, setTodos] = React.useState<Todo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [token, setToken] = React.useState("");
+  const [selectMode, setSelectMode] = React.useState(false);
 
   const refreshTodos = () => {
     setLoading(true);
@@ -181,6 +182,8 @@ export default () => {
                 loading={loading}
                 createPath="/create"
                 getPath={(id) => `/${id}`}
+                selectMode={selectMode}
+                onToggleSelectMode={() => setSelectMode(!selectMode)}
               />
             </Route>
           </Switch>

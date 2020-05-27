@@ -10,12 +10,14 @@ interface ITodoForm {
   title: string;
   body: string;
   onSubmit: (event: React.FormEvent<HTMLDivElement>) => void;
+  saveButtonText?: string;
 }
 
 export const TodoForm: React.FC<ITodoForm> = ({
   title,
   body,
   onSubmit,
+  saveButtonText,
   ...rest
 }) => (
   <Box as="form" onSubmit={onSubmit} pt={0} pb={5} {...rest}>
@@ -52,7 +54,7 @@ export const TodoForm: React.FC<ITodoForm> = ({
       <Box px={2} ml="auto">
         <HoverButton>
           <FaSave />
-          <span>Create</span>
+          <span>{saveButtonText || "Create"}</span>
         </HoverButton>
       </Box>
     </Flex>

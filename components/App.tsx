@@ -10,6 +10,7 @@ import { BrowserHeaders } from "browser-headers";
 import { ListTodoPage } from "../pages/ListTodoPage";
 import { GetTodoPage } from "../pages/GetTodoPage";
 import { CreateTodoPage } from "../pages/CreateTodoPage";
+import { UpdateTodoPage } from "../pages/UpdateTodoPage";
 
 const theme = {
   ...preset,
@@ -70,6 +71,48 @@ export default () => {
       <ThemeUIThemeProvider theme={theme}>
         <BrowserRouter>
           <Switch>
+            <Route
+              path="/:id(\d+)/update"
+              render={(props) => {
+                const todo = todos.find(
+                  (todo) => todo.getId() == props.match.params.id
+                );
+
+                return (
+                  todo && (
+                    <UpdateTodoPage
+                      loading={loading}
+                      id={todo.getId()}
+                      title={todo.getTitle()}
+                      body={todo.getBody()}
+                      onSubmit={(id, title, body) => {
+                        const todo = new Todo();
+                        todo.setId(id);
+                        todo.setTitle(title);
+                        todo.setBody(body);
+
+                        setLoading(true);
+
+                        client.update(
+                          todo,
+                          new BrowserHeaders({
+                            Authorization: `Bearer ${token}`,
+                          }),
+                          (e) => {
+                            e && console.error(e);
+
+                            refreshTodos();
+
+                            return props.history.push("/");
+                          }
+                        );
+                      }}
+                      backPath="/"
+                    />
+                  )
+                );
+              }}
+            />
             <Route
               path="/:id(\d+)"
               render={(props) => {

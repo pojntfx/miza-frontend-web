@@ -4,6 +4,7 @@ import { Label, Input, Textarea } from "@rebass/forms";
 import styled from "styled-components";
 import { Theme } from "theme-ui";
 import { FaSave } from "react-icons/fa";
+import { withHover } from "../utils/withHover";
 
 interface ITodoForm {
   title: string;
@@ -57,25 +58,6 @@ export const TodoForm: React.FC<ITodoForm> = ({
     </Flex>
   </Box>
 );
-
-const withHover = (
-  center: boolean,
-  shadow?: boolean
-) => `transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-  transition-delay: initial;
-  transition-property: all;
-  cursor: pointer;
-
-  &:hover {
-    transform: ${center ? "translateX(-50%)" : ""} scale(1.05);
-    ${shadow ? "box-shadow: 0 0 15px rgba(0, 0, 0, 0.13);" : ""}
-  }
-
-  &:active {
-    transform: ${center ? "translateX(-50%)" : ""} scale(1);
-    ${shadow ? "background: rgba(0, 0, 0, 0.13);" : ""}
-  }`;
 
 const HoverButton = styled(Button)<{ theme: Theme }>`
   ${withHover(false, true)}

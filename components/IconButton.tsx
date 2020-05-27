@@ -2,7 +2,11 @@ import styled from "styled-components";
 import { Button } from "rebass";
 import { Theme } from "theme-ui";
 
-export const IconButton = styled(Button)<{ theme: Theme; inverted?: boolean }>`
+export const IconButton = styled(Button)<{
+  theme: Theme;
+  inverted?: boolean;
+  primary?: boolean;
+}>`
   min-width: initial !important;
 
   cursor: pointer;
@@ -22,6 +26,7 @@ export const IconButton = styled(Button)<{ theme: Theme; inverted?: boolean }>`
 
   &:hover,
   &:active {
-    color: ${({ inverted }) => (inverted ? "red" : "#d9d9d9")} !important;
+    color: ${({ inverted, primary }) =>
+      inverted ? (primary ? "#07c" : "red") : "#d9d9d9"} !important;
   }
 `;

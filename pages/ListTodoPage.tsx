@@ -8,11 +8,11 @@ import { SwipeActionWrapper } from "../components/SwipeActionWrapper";
 import { FaTrash, FaRegCheckSquare, FaPlus, FaCog } from "react-icons/fa";
 import { TodoSummary } from "../components/TodoSummary";
 import { TodoLink } from "../components/TodoLink";
-import { Loading } from "../components/App";
 import { ActionBar } from "../components/ActionBar";
 import { IconButton } from "../components/IconButton";
 import { AddNoteButton } from "../components/AddNoteButton";
 import { Link } from "react-router-dom";
+import { Loading } from "../components/Loading";
 
 interface IListTodoPageProps {
   todos: { id: number; title: string; body: string }[];

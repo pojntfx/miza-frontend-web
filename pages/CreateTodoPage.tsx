@@ -2,11 +2,11 @@ import * as React from "react";
 import { Container } from "../components/Container";
 import { Header } from "../components/Header";
 import { Heading, Flex } from "rebass";
-import { Loading } from "../components/App";
 import { Link } from "react-router-dom";
 import { IconButton } from "../components/IconButton";
 import { FaTimes } from "react-icons/fa";
 import { TodoForm } from "../components/TodoForm";
+import { Loading } from "../components/Loading";
 
 interface ICreateTodoPageProps {
   loading?: boolean;

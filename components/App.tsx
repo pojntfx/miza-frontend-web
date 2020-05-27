@@ -4,67 +4,17 @@ import { Todo, TodoID, NewTodo } from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider, Theme } from "theme-ui";
 import preset from "@rebass/preset";
-import { Heading, Box, Button, Flex } from "rebass";
-import styled from "styled-components";
-import {
-  FaPlus,
-  FaRegCheckSquare,
-  FaCog,
-  FaTrash,
-  FaTimes,
-} from "react-icons/fa";
-import { SyncLoader } from "react-spinners";
-import { Transition } from "react-spring/renderprops";
-import { LoaderSizeProps } from "react-spinners/interfaces";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link,
-  withRouter,
-} from "react-router-dom";
-import UpdateTodo from "./UpdateTodo";
-import { ActionBar } from "./ActionBar";
-import { Header } from "./Header";
-import { SwipeNDragList } from "./SwipeNDragList";
-import { SwipeNDragItem } from "./SwipeNDragItem";
-import { TodoSummary } from "./TodoSummary";
-import { TodoForm } from "./TodoForm";
+import { BrowserRouter, Switch, Route, withRouter } from "react-router-dom";
 import { GoogleLogin } from "react-google-login";
 import { BrowserHeaders } from "browser-headers";
-import { Container } from "./Container";
-import { IconButton } from "./IconButton";
-import { CreateTodoPage } from "../pages/CreateTodoPage";
-import { SwipeActionWrapper } from "./SwipeActionWrapper";
-import { TodoLink } from "./TodoLink";
-import { AddNoteButton } from "./AddNoteButton";
 import { ListTodoPage } from "../pages/ListTodoPage";
+import { GetTodoPage } from "../pages/GetTodoPage";
+import { CreateTodoPage } from "../pages/CreateTodoPage";
 
 const theme = {
   ...preset,
   space: [0, 1, 2, 4, 8, 16, 32, 64, 128],
 };
-
-export const Loading = ({ loading }: { loading?: boolean }) => (
-  <Transition
-    items={loading}
-    from={{ opacity: 0 }}
-    enter={{ opacity: 1 }}
-    leave={{ opacity: 0 }}
-  >
-    {(loading) =>
-      loading &&
-      ((props) => (
-        <SyncLoader
-          color="#ff6a00"
-          size={7.5}
-          loading={loading}
-          css={(props as unknown) as LoaderSizeProps["css"]}
-        />
-      ))
-    }
-  </Transition>
-);
 
 export default () => {
   const client = new TodosClient(process.env.API_ENDPOINT);
@@ -121,14 +71,16 @@ export default () => {
         <BrowserRouter>
           <Switch>
             <Route
-              path="/todos/:id"
-              render={(props) => (
-                <UpdateTodo
-                  client={client}
-                  id={parseInt(props.match.params.id)}
-                  token={token}
-                />
-              )}
+              path="/:id(\d+)"
+              render={(props) => {
+                const todo = todos.find(
+                  (todo) => todo.getId() == props.match.params.id
+                );
+
+                return (
+                  <GetTodoPage title={todo.getTitle()} body={todo.getBody()} />
+                );
+              }}
             />
             <Route path="/create">
               {withRouter((props) => (
@@ -176,7 +128,7 @@ export default () => {
                 }))}
                 loading={loading}
                 createPath={() => "/create"}
-                getPath={(id) => `/todos/${id}`}
+                getPath={(id) => `/${id}`}
               />
             </Route>
           </Switch>

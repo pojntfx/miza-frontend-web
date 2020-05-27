@@ -5,7 +5,13 @@ import { Heading } from "rebass";
 import { SwipeNDragList } from "../components/SwipeNDragList";
 import { SwipeNDragItem } from "../components/SwipeNDragItem";
 import { SwipeActionWrapper } from "../components/SwipeActionWrapper";
-import { FaTrash, FaRegCheckSquare, FaPlus, FaCog } from "react-icons/fa";
+import {
+  FaTrash,
+  FaRegCheckSquare,
+  FaPlus,
+  FaCog,
+  FaCheckSquare,
+} from "react-icons/fa";
 import { TodoSummary } from "../components/TodoSummary";
 import { TodoLink } from "../components/TodoLink";
 import { ActionBar } from "../components/ActionBar";
@@ -18,6 +24,10 @@ interface IListTodoPageProps {
   todos: { id: number; title: string; body: string }[];
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
+  selectMode?: boolean;
+  onToggleSelectMode: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
   onReorder: (id: number) => void;
   getPath: (id: number) => string;
   createPath: string;
@@ -28,6 +38,8 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
   todos,
   onDelete,
   onSelect,
+  selectMode,
+  onToggleSelectMode,
   onReorder,
   loading,
   getPath,
@@ -87,8 +99,8 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
     </SwipeNDragList>
     <ActionBar
       start={
-        <IconButton>
-          <FaRegCheckSquare />
+        <IconButton onClick={onToggleSelectMode}>
+          {selectMode ? <FaCheckSquare /> : <FaRegCheckSquare />}
         </IconButton>
       }
       center={

@@ -11,11 +11,13 @@ import { Loading } from "../components/Loading";
 interface ICreateTodoPageProps {
   loading?: boolean;
   onSubmit: (title: string, body: string) => void;
+  backPath: string;
 }
 
 export const CreateTodoPage: React.FC<ICreateTodoPageProps> = ({
   loading,
   onSubmit,
+  backPath,
   ...otherProps
 }) => (
   <Container {...otherProps}>
@@ -28,7 +30,7 @@ export const CreateTodoPage: React.FC<ICreateTodoPageProps> = ({
       end={
         <Flex>
           <Loading loading={loading} />
-          <Link to="/">
+          <Link to={backPath}>
             <IconButton inverted>
               <FaTimes />
             </IconButton>

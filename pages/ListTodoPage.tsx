@@ -20,7 +20,7 @@ interface IListTodoPageProps {
   onSelect: (id: number) => void;
   onReorder: (id: number) => void;
   getPath: (id: number) => string;
-  createPath: () => string;
+  createPath: string;
   loading?: boolean;
 }
 
@@ -92,7 +92,7 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
         </IconButton>
       }
       center={
-        <AddNoteButton as={Link} to={createPath()}>
+        <AddNoteButton as={Link} to={createPath}>
           <FaPlus />
           <span>Add Todo</span>
         </AddNoteButton>

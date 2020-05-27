@@ -78,7 +78,15 @@ export default () => {
                 );
 
                 return (
-                  <GetTodoPage title={todo.getTitle()} body={todo.getBody()} />
+                  todo && (
+                    <GetTodoPage
+                      id={todo.getId()}
+                      title={todo.getTitle()}
+                      body={todo.getBody()}
+                      getPath={(id) => `/${id}/update`}
+                      backPath="/"
+                    />
+                  )
                 );
               }}
             />
@@ -107,6 +115,7 @@ export default () => {
                       }
                     );
                   }}
+                  backPath="/"
                 />
               ))}
             </Route>
@@ -127,7 +136,7 @@ export default () => {
                   body: todo.getBody(),
                 }))}
                 loading={loading}
-                createPath={() => "/create"}
+                createPath="/create"
                 getPath={(id) => `/${id}`}
               />
             </Route>

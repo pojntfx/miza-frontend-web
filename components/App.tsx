@@ -174,11 +174,20 @@ export default () => {
                   )
                 }
                 onReorder={(id) => console.log(`Reordering ${id}`)}
-                onSelect={(id) =>
-                  selectedTodos.find((s) => s == id)
-                    ? setSelectedTodos((s) => s.filter((t) => t != id))
-                    : setSelectedTodos((s) => [...s, id])
-                }
+                onSelect={(id) => {
+                  if (selectedTodos.find((s) => s == id)) {
+                    setSelectedTodos((s) => {
+                      const newTodos = s.filter((t) => t != id);
+
+                      newTodos.length < 1 && setSelectMode(false);
+
+                      return newTodos;
+                    });
+                  } else {
+                    setSelectedTodos((s) => [...s, id]);
+                    setSelectMode(true);
+                  }
+                }}
                 onDiscard={() => setSelectedTodos([])}
                 selectedTodos={selectedTodos}
                 todos={todos.map((todo) => ({
@@ -190,7 +199,10 @@ export default () => {
                 createPath="/create"
                 getPath={(id) => `/${id}`}
                 selectMode={selectMode}
-                onToggleSelectMode={() => setSelectMode(!selectMode)}
+                onToggleSelectMode={() => {
+                  setSelectedTodos([]);
+                  setSelectMode(!selectMode);
+                }}
               />
             </Route>
           </Switch>

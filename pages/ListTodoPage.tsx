@@ -55,8 +55,13 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
     {selectedTodos.length != 0 && (
       <SelectionBar
         selected={selectedTodos.length}
-        onClick={() => selectedTodos.map((id) => onDelete(id))}
-        onDiscard={onDiscard}
+        onClick={() => {
+          /* TODO: call onDeleteMany */
+        }}
+        onDiscard={(e) => {
+          onDiscard();
+          onToggleSelectMode(e);
+        }}
       />
     )}
     <Container {...otherProps}>

@@ -27,6 +27,7 @@ interface IListTodoPageProps {
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
   onDiscard: () => void;
+  onDeleteMultiple: (ids: number[]) => void;
   selectMode?: boolean;
   onToggleSelectMode: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -43,6 +44,7 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
   onDelete,
   onSelect,
   onDiscard,
+  onDeleteMultiple,
   selectMode,
   onToggleSelectMode,
   onReorder,
@@ -55,9 +57,7 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
     {selectedTodos.length != 0 && (
       <SelectionBar
         selected={selectedTodos.length}
-        onClick={() => {
-          /* TODO: call onDeleteMany */
-        }}
+        onClick={() => onDeleteMultiple(selectedTodos)}
         onDiscard={(e) => {
           onDiscard();
           onToggleSelectMode(e);

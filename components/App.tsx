@@ -64,6 +64,33 @@ export default () => {
     }
   };
 
+  const deleteMultipleTodos = (ids: number[]) => {
+    const shouldDelete = confirm(`Do you want to delete ${ids.length} todos?`);
+
+    if (shouldDelete) {
+      setLoading(true);
+
+      Promise.all(
+        ids.map((id) => {
+          const todoID = new TodoID();
+          todoID.setId(id);
+
+          return new Promise((res) =>
+            client.delete(
+              todoID,
+              new BrowserHeaders({
+                Authorization: `Bearer ${token}`,
+              }),
+              (e) => {
+                res(e && console.error(e));
+              }
+            )
+          );
+        })
+      ).then(() => refreshTodos());
+    }
+  };
+
   React.useEffect(() => {
     token && refreshTodos();
   }, [token]);
@@ -189,6 +216,12 @@ export default () => {
                   }
                 }}
                 onDiscard={() => setSelectedTodos([])}
+                onDeleteMultiple={(ids) => {
+                  setSelectMode(false);
+                  setSelectedTodos([]);
+
+                  deleteMultipleTodos(ids);
+                }}
                 selectedTodos={selectedTodos}
                 todos={todos.map((todo) => ({
                   id: todo.getId(),

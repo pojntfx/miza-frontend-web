@@ -19,12 +19,14 @@ import { IconButton } from "../components/IconButton";
 import { AddNoteButton } from "../components/AddNoteButton";
 import { Link } from "react-router-dom";
 import { Loading } from "../components/Loading";
+import { SelectionBar } from "../components/SelectionBar";
 
 interface IListTodoPageProps {
   todos: { id: number; title: string; body: string }[];
   selectedTodos: number[];
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
+  onDiscard: () => void;
   selectMode?: boolean;
   onToggleSelectMode: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -40,6 +42,7 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
   selectedTodos,
   onDelete,
   onSelect,
+  onDiscard,
   selectMode,
   onToggleSelectMode,
   onReorder,
@@ -49,6 +52,13 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
   ...otherProps
 }) => (
   <>
+    {selectedTodos.length != 0 && (
+      <SelectionBar
+        selected={selectedTodos.length}
+        onClick={() => selectedTodos.map((id) => onDelete(id))}
+        onDiscard={onDiscard}
+      />
+    )}
     <Container {...otherProps}>
       <Header
         start={

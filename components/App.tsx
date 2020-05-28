@@ -179,6 +179,7 @@ export default () => {
                     ? setSelectedTodos((s) => s.filter((t) => t != id))
                     : setSelectedTodos((s) => [...s, id])
                 }
+                onDiscard={() => setSelectedTodos([])}
                 selectedTodos={selectedTodos}
                 todos={todos.map((todo) => ({
                   id: todo.getId(),

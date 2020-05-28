@@ -23,6 +23,7 @@ export default () => {
   const [loading, setLoading] = React.useState(false);
   const [token, setToken] = React.useState("");
   const [selectMode, setSelectMode] = React.useState(false);
+  const [selectedTodos, setSelectedTodos] = React.useState<number[]>([]);
 
   const refreshTodos = () => {
     setLoading(true);
@@ -173,7 +174,12 @@ export default () => {
                   )
                 }
                 onReorder={(id) => console.log(`Reordering ${id}`)}
-                onSelect={(id) => console.log(`Selecting ${id}`)}
+                onSelect={(id) =>
+                  selectedTodos.find((s) => s == id)
+                    ? setSelectedTodos((s) => s.filter((t) => t != id))
+                    : setSelectedTodos((s) => [...s, id])
+                }
+                selectedTodos={selectedTodos}
                 todos={todos.map((todo) => ({
                   id: todo.getId(),
                   title: todo.getTitle(),

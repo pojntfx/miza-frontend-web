@@ -22,6 +22,7 @@ import { Loading } from "../components/Loading";
 
 interface IListTodoPageProps {
   todos: { id: number; title: string; body: string }[];
+  selectedTodos: number[];
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
   selectMode?: boolean;
@@ -36,6 +37,7 @@ interface IListTodoPageProps {
 
 export const ListTodoPage: React.FC<IListTodoPageProps> = ({
   todos,
+  selectedTodos,
   onDelete,
   onSelect,
   selectMode,
@@ -92,11 +94,12 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
               }}
               as={TodoLink}
               to={getPath(todo.id)}
+              selected={selectedTodos.find((s) => s == todo.id) ? true : false}
               selectMode={selectMode}
               onToggleSelect={(e) => {
                 e.preventDefault();
 
-                console.log("uwu");
+                onSelect(todo.id);
               }}
             />
           )}

@@ -28,7 +28,7 @@ export const TodoSummary: React.FC<ITodoSummaryProps> = ({
   ...rest
 }) => (
   <Wrapper {...rest}>
-    {selectMode && (
+    {(selectMode || selected) && (
       <TodoSelectButton onClick={onToggleSelect} inverted primary>
         {selected ? <FaCheckSquare /> : <FaRegCheckSquare />}
       </TodoSelectButton>

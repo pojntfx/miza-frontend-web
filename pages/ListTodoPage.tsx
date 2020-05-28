@@ -92,6 +92,12 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
               }}
               as={TodoLink}
               to={getPath(todo.id)}
+              selectMode={selectMode}
+              onToggleSelect={(e) => {
+                e.preventDefault();
+
+                console.log("uwu");
+              }}
             />
           )}
         </SwipeNDragItem>

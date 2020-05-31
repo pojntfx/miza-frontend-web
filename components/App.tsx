@@ -210,7 +210,7 @@ export default () => {
                     return;
                   }
 
-                  const offset = newIndex - oldIndex;
+                  const offset = -(newIndex - oldIndex); // We are rendering reversed
 
                   const todoReorder = new TodoReorder();
                   todoReorder.setId(id);
@@ -252,12 +252,14 @@ export default () => {
                   deleteMultipleTodos(ids);
                 }}
                 selectedTodos={selectedTodos}
-                todos={todos.map((todo) => ({
-                  id: todo.getId(),
-                  title: todo.getTitle(),
-                  body: todo.getBody(),
-                  index: todo.getIndex(),
-                }))}
+                todos={todos
+                  .map((todo) => ({
+                    id: todo.getId(),
+                    title: todo.getTitle(),
+                    body: todo.getBody(),
+                    index: todos.length - (todo.getIndex() - 1),
+                  }))
+                  .sort((a, b) => a.index - b.index)} // We are rendering reversed
                 loading={loading}
                 createPath="/create"
                 getPath={(id) => `/${id}`}

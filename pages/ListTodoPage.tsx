@@ -76,6 +76,9 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
     </Container>
     <SwipeNDragList
       onDragEnd={(d) =>
+        d.draggableId &&
+        d.source &&
+        d.destination &&
         onReorder(parseInt(d.draggableId), d.source.index, d.destination.index)
       }
       droppableId="todos"

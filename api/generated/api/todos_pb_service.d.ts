@@ -50,6 +50,15 @@ type TodosDelete = {
   readonly responseType: typeof api_todos_pb.Todo;
 };
 
+type TodosReorder = {
+  readonly methodName: string;
+  readonly service: typeof Todos;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof api_todos_pb.TodoReorder;
+  readonly responseType: typeof api_todos_pb.Todo;
+};
+
 export class Todos {
   static readonly serviceName: string;
   static readonly Create: TodosCreate;
@@ -57,6 +66,7 @@ export class Todos {
   static readonly Get: TodosGet;
   static readonly Update: TodosUpdate;
   static readonly Delete: TodosDelete;
+  static readonly Reorder: TodosReorder;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -134,6 +144,15 @@ export class TodosClient {
   ): UnaryResponse;
   delete(
     requestMessage: api_todos_pb.TodoID,
+    callback: (error: ServiceError|null, responseMessage: api_todos_pb.Todo|null) => void
+  ): UnaryResponse;
+  reorder(
+    requestMessage: api_todos_pb.TodoReorder,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: api_todos_pb.Todo|null) => void
+  ): UnaryResponse;
+  reorder(
+    requestMessage: api_todos_pb.TodoReorder,
     callback: (error: ServiceError|null, responseMessage: api_todos_pb.Todo|null) => void
   ): UnaryResponse;
 }

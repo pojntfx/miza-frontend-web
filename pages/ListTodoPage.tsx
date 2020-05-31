@@ -22,7 +22,7 @@ import { Loading } from "../components/Loading";
 import { SelectionBar } from "../components/SelectionBar";
 
 interface IListTodoPageProps {
-  todos: { id: number; title: string; body: string }[];
+  todos: { id: number; title: string; body: string; index: number }[];
   selectedTodos: number[];
   onDelete: (id: number) => void;
   onSelect: (id: number) => void;
@@ -32,7 +32,7 @@ interface IListTodoPageProps {
   onToggleSelectMode: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
-  onReorder: (id: number) => void;
+  onReorder: (id: number, oldIndex: number, newIndex: number) => void;
   getPath: (id: number) => string;
   createPath: string;
   loading?: boolean;
@@ -75,14 +75,16 @@ export const ListTodoPage: React.FC<IListTodoPageProps> = ({
       ></Header>
     </Container>
     <SwipeNDragList
-      onDragEnd={(d) => onReorder(parseInt(d.draggableId))}
+      onDragEnd={(d) =>
+        onReorder(parseInt(d.draggableId), d.source.index, d.destination.index)
+      }
       droppableId="todos"
     >
-      {todos.map((todo, i) => (
+      {todos.map((todo) => (
         <SwipeNDragItem
           key={todo.id}
           draggableId={todo.id.toString()}
-          index={i}
+          index={todo.index}
           startItem={
             <SwipeActionWrapper>
               <FaTrash />

@@ -14,9 +14,12 @@ service Todos {
   // Get gets one todo
   rpc Get(TodoID) returns (Todo);
   // Update updates one todo
+  // Index can't be updated with the `Update` rpc, use the `Reorder` rpc
   rpc Update(Todo) returns (Todo);
   // Delete deletes one todo
   rpc Delete(TodoID) returns (Todo);
+  // Reorder reorders a todo
+  rpc Reorder(TodoReorder) returns (Todo);
 }
 
 // NewTodo is a new todo
@@ -30,6 +33,7 @@ message Todo {
   int64 ID = 1;
   string Title = 2;
   string Body = 3;
+  int64 Index = 4;
 }
 
 // TodoList is a list of todos
@@ -37,3 +41,9 @@ message TodoList { repeated Todo Todos = 1; }
 
 // TodoID is a todo's ID
 message TodoID { int64 ID = 1; }
+
+// TodoReorder is a request to reorder a todo
+message TodoReorder {
+  int64 ID = 1;
+  int64 Offset = 2;
+}

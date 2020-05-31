@@ -38,6 +38,9 @@ export class Todo extends jspb.Message {
   getBody(): string;
   setBody(value: string): void;
 
+  getIndex(): number;
+  setIndex(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Todo.AsObject;
   static toObject(includeInstance: boolean, msg: Todo): Todo.AsObject;
@@ -53,6 +56,7 @@ export namespace Todo {
     id: number,
     title: string,
     body: string,
+    index: number,
   }
 }
 
@@ -95,6 +99,30 @@ export class TodoID extends jspb.Message {
 export namespace TodoID {
   export type AsObject = {
     id: number,
+  }
+}
+
+export class TodoReorder extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
+  getOffset(): number;
+  setOffset(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TodoReorder.AsObject;
+  static toObject(includeInstance: boolean, msg: TodoReorder): TodoReorder.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TodoReorder, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TodoReorder;
+  static deserializeBinaryFromReader(message: TodoReorder, reader: jspb.BinaryReader): TodoReorder;
+}
+
+export namespace TodoReorder {
+  export type AsObject = {
+    id: number,
+    offset: number,
   }
 }
 

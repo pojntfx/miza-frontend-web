@@ -56,6 +56,15 @@ Todos.Delete = {
   responseType: api_todos_pb.Todo
 };
 
+Todos.Reorder = {
+  methodName: "Reorder",
+  service: Todos,
+  requestStream: false,
+  responseStream: false,
+  requestType: api_todos_pb.TodoReorder,
+  responseType: api_todos_pb.Todo
+};
+
 exports.Todos = Todos;
 
 function TodosClient(serviceHost, options) {
@@ -192,6 +201,37 @@ TodosClient.prototype.delete = function pb_delete(requestMessage, metadata, call
     callback = arguments[1];
   }
   var client = grpc.unary(Todos.Delete, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+TodosClient.prototype.reorder = function reorder(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(Todos.Reorder, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

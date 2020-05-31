@@ -1,6 +1,11 @@
 import * as React from "react";
 import { TodosClient } from "../api/generated/api/todos_pb_service";
-import { Todo, TodoID, NewTodo } from "../api/generated/api/todos_pb";
+import {
+  Todo,
+  TodoID,
+  NewTodo,
+  TodoReorder,
+} from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider } from "theme-ui";
 import preset from "@rebass/preset";
@@ -200,7 +205,31 @@ export default () => {
                       todos.find((todo) => todo.getId() == id).getBody()
                   )
                 }
-                onReorder={(id) => console.log(`Reordering ${id}`)}
+                onReorder={(id, oldIndex, newIndex) => {
+                  if (newIndex == oldIndex) {
+                    return;
+                  }
+
+                  const offset = newIndex - oldIndex;
+
+                  const todoReorder = new TodoReorder();
+                  todoReorder.setId(id);
+                  todoReorder.setOffset(offset);
+
+                  setLoading(true);
+
+                  client.reorder(
+                    todoReorder,
+                    new BrowserHeaders({
+                      Authorization: `Bearer ${token}`,
+                    }),
+                    (e) => {
+                      e && console.error(e);
+
+                      refreshTodos();
+                    }
+                  );
+                }}
                 onSelect={(id) => {
                   if (selectedTodos.find((s) => s == id)) {
                     setSelectedTodos((s) => {
@@ -227,6 +256,7 @@ export default () => {
                   id: todo.getId(),
                   title: todo.getTitle(),
                   body: todo.getBody(),
+                  index: todo.getIndex(),
                 }))}
                 loading={loading}
                 createPath="/create"

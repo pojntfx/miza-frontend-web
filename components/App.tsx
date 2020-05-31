@@ -16,6 +16,7 @@ import { ListTodoPage } from "../pages/ListTodoPage";
 import { GetTodoPage } from "../pages/GetTodoPage";
 import { CreateTodoPage } from "../pages/CreateTodoPage";
 import { UpdateTodoPage } from "../pages/UpdateTodoPage";
+import { LocalTodosService } from "../utils/localTodoService";
 
 const theme = {
   ...preset,
@@ -212,6 +213,33 @@ export default () => {
 
                   const offset = -(newIndex - oldIndex); // We are rendering reversed
 
+                  // Update locally
+                  const localTodosService = new LocalTodosService();
+                  todos.forEach((t) =>
+                    localTodosService.create(
+                      t.getId(),
+                      t.getTitle(),
+                      t.getBody(),
+                      t.getIndex()
+                    )
+                  );
+
+                  localTodosService.reorder(id, offset);
+
+                  setTodos(
+                    localTodosService.list().map((t) => {
+                      const todo = new Todo();
+
+                      todo.setId(t.id);
+                      todo.setTitle(t.title);
+                      todo.setBody(t.body);
+                      todo.setIndex(t.index);
+
+                      return todo;
+                    })
+                  );
+
+                  // Update remotely
                   const todoReorder = new TodoReorder();
                   todoReorder.setId(id);
                   todoReorder.setOffset(offset);

@@ -1,22 +1,16 @@
 import * as React from "react";
-import { TodosClient } from "../api/generated/api/todos_pb_service";
-import {
-  Todo,
-  TodoID,
-  NewTodo,
-  TodoReorder,
-} from "../api/generated/api/todos_pb";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { ThemeProvider as ThemeUIThemeProvider } from "theme-ui";
 import preset from "@rebass/preset";
 import { BrowserRouter, Switch, Route, withRouter } from "react-router-dom";
 import { GoogleLogin } from "react-google-login";
-import { BrowserHeaders } from "browser-headers";
 import { ListTodoPage } from "../pages/ListTodoPage";
 import { GetTodoPage } from "../pages/GetTodoPage";
 import { CreateTodoPage } from "../pages/CreateTodoPage";
 import { UpdateTodoPage } from "../pages/UpdateTodoPage";
-import { LocalTodosService } from "../utils/localTodoService";
+import { LocalTodosService, ITodo } from "../services/todos";
+import { RemoteTodosService } from "../api/todos";
+import { TodosConverter } from "../converters/todos";
 
 const theme = {
   ...preset,
@@ -24,49 +18,40 @@ const theme = {
 };
 
 export default () => {
-  const client = new TodosClient(process.env.API_ENDPOINT);
-  const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [todos, setTodos] = React.useState<ITodo[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [token, setToken] = React.useState("");
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedTodos, setSelectedTodos] = React.useState<number[]>([]);
 
+  const localTodosService = new LocalTodosService();
+  const remoteTodosService = new RemoteTodosService(
+    process.env.API_ENDPOINT,
+    token
+  );
+  const todosConverter = new TodosConverter();
+
   const refreshTodos = () => {
     setLoading(true);
 
-    client.list(
-      new Todo(),
-      new BrowserHeaders({
-        Authorization: `Bearer ${token}`,
-      }),
-      (e, res) => {
-        e ? console.error(e) : setTodos(res.getTodosList());
-
-        setLoading(false);
-      }
-    );
+    remoteTodosService
+      .list()
+      .then((d) => setTodos(d.map((t) => todosConverter.toInternal(t))))
+      .catch((e) => console.error(e))
+      .finally(() => setLoading(false));
   };
 
   const deleteTodo = (id: number, title: string) => {
-    const todoID = new TodoID();
-    todoID.setId(id);
-
     const shouldDelete = confirm(`Do you want to delete todo ${title}?`);
 
     if (shouldDelete) {
       setLoading(true);
 
-      client.delete(
-        todoID,
-        new BrowserHeaders({
-          Authorization: `Bearer ${token}`,
-        }),
-        (e) => {
-          e && console.error(e);
-
-          refreshTodos();
-        }
-      );
+      remoteTodosService
+        .delete(id)
+        .then(() => refreshTodos())
+        .catch((e) => console.error(e))
+        .finally(() => setLoading(false));
     }
   };
 
@@ -76,24 +61,10 @@ export default () => {
     if (shouldDelete) {
       setLoading(true);
 
-      Promise.all(
-        ids.map((id) => {
-          const todoID = new TodoID();
-          todoID.setId(id);
-
-          return new Promise((res) =>
-            client.delete(
-              todoID,
-              new BrowserHeaders({
-                Authorization: `Bearer ${token}`,
-              }),
-              (e) => {
-                res(e && console.error(e));
-              }
-            )
-          );
-        })
-      ).then(() => refreshTodos());
+      Promise.all(ids.map((id) => remoteTodosService.delete(id)))
+        .then(() => refreshTodos())
+        .catch((e) => console.error(e))
+        .finally(() => setLoading(false));
     }
   };
 
@@ -110,37 +81,26 @@ export default () => {
               path="/:id(\d+)/update"
               render={(props) => {
                 const todo = todos.find(
-                  (todo) => todo.getId() == props.match.params.id
+                  (todo) => todo.id == props.match.params.id
                 );
 
                 return (
                   todo && (
                     <UpdateTodoPage
+                      {...todo}
                       loading={loading}
-                      id={todo.getId()}
-                      title={todo.getTitle()}
-                      body={todo.getBody()}
                       onSubmit={(id, title, body) => {
-                        const todo = new Todo();
-                        todo.setId(id);
-                        todo.setTitle(title);
-                        todo.setBody(body);
-
                         setLoading(true);
 
-                        client.update(
-                          todo,
-                          new BrowserHeaders({
-                            Authorization: `Bearer ${token}`,
-                          }),
-                          (e) => {
-                            e && console.error(e);
-
-                            refreshTodos();
+                        remoteTodosService
+                          .update(id, title, body)
+                          .then(() => refreshTodos())
+                          .catch((e) => console.error(e))
+                          .finally(() => {
+                            setLoading(false);
 
                             return props.history.push("/");
-                          }
-                        );
+                          });
                       }}
                       backPath="/"
                     />
@@ -152,15 +112,13 @@ export default () => {
               path="/:id(\d+)"
               render={(props) => {
                 const todo = todos.find(
-                  (todo) => todo.getId() == props.match.params.id
+                  (todo) => todo.id == props.match.params.id
                 );
 
                 return (
                   todo && (
                     <GetTodoPage
-                      id={todo.getId()}
-                      title={todo.getTitle()}
-                      body={todo.getBody()}
+                      {...todo}
                       getPath={(id) => `/${id}/update`}
                       backPath="/"
                     />
@@ -173,25 +131,17 @@ export default () => {
                 <CreateTodoPage
                   loading={loading}
                   onSubmit={(title, body) => {
-                    const todo = new NewTodo();
-                    todo.setTitle(title);
-                    todo.setBody(body);
-
                     setLoading(true);
 
-                    client.create(
-                      todo,
-                      new BrowserHeaders({
-                        Authorization: `Bearer ${token}`,
-                      }),
-                      (e) => {
-                        e && console.error(e);
-
-                        refreshTodos();
+                    remoteTodosService
+                      .create(title, body)
+                      .then(() => refreshTodos())
+                      .catch((e) => console.error(e))
+                      .finally(() => {
+                        setLoading(false);
 
                         return props.history.push("/");
-                      }
-                    );
+                      });
                   }}
                   backPath="/"
                 />
@@ -202,8 +152,8 @@ export default () => {
                 onDelete={(id) =>
                   deleteTodo(
                     id,
-                    todos.find((todo) => todo.getId() == id).getTitle() ||
-                      todos.find((todo) => todo.getId() == id).getBody()
+                    todos.find((todo) => todo.id == id).title ||
+                      todos.find((todo) => todo.id == id).body
                   )
                 }
                 onReorder={(id, oldIndex, newIndex) => {
@@ -214,49 +164,22 @@ export default () => {
                   const offset = -(newIndex - oldIndex); // We are rendering reversed
 
                   // Update locally
-                  const localTodosService = new LocalTodosService();
                   todos.forEach((t) =>
-                    localTodosService.create(
-                      t.getId(),
-                      t.getTitle(),
-                      t.getBody(),
-                      t.getIndex()
-                    )
+                    localTodosService.create(t.id, t.title, t.body, t.index)
                   );
 
                   localTodosService.reorder(id, offset);
 
-                  setTodos(
-                    localTodosService.list().map((t) => {
-                      const todo = new Todo();
-
-                      todo.setId(t.id);
-                      todo.setTitle(t.title);
-                      todo.setBody(t.body);
-                      todo.setIndex(t.index);
-
-                      return todo;
-                    })
-                  );
+                  setTodos(localTodosService.list());
 
                   // Update remotely
-                  const todoReorder = new TodoReorder();
-                  todoReorder.setId(id);
-                  todoReorder.setOffset(offset);
-
                   setLoading(true);
 
-                  client.reorder(
-                    todoReorder,
-                    new BrowserHeaders({
-                      Authorization: `Bearer ${token}`,
-                    }),
-                    (e) => {
-                      e && console.error(e);
-
-                      refreshTodos();
-                    }
-                  );
+                  remoteTodosService
+                    .reorder(id, offset)
+                    .then(() => refreshTodos())
+                    .catch((e) => console.error(e))
+                    .finally(() => setLoading(false));
                 }}
                 onSelect={(id) => {
                   if (selectedTodos.find((s) => s == id)) {
@@ -282,10 +205,8 @@ export default () => {
                 selectedTodos={selectedTodos}
                 todos={todos
                   .map((todo) => ({
-                    id: todo.getId(),
-                    title: todo.getTitle(),
-                    body: todo.getBody(),
-                    index: todos.length - (todo.getIndex() - 1),
+                    ...todo,
+                    index: todos.length - (todo.index - 1),
                   }))
                   .sort((a, b) => a.index - b.index)} // We are rendering reversed
                 loading={loading}

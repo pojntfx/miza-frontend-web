@@ -44,7 +44,7 @@
     "typescript": "^3.9.2"
   },
   "scripts": {
-    "generate": "mkdir -p ./api/generated/ && protoc --plugin=\"protoc-gen-ts=$(which protoc-gen-ts)\" --js_out='import_style=commonjs,binary:./api/generated' --ts_out='service=grpc-web:./api/generated' ./api/todos.proto",
+    "generate": "mkdir -p ./src/proto/generated/ && protoc --plugin=\"protoc-gen-ts=$(which protoc-gen-ts)\" --js_out='import_style=commonjs,binary:./src/proto/generated' --ts_out='service=grpc-web:./src/proto/generated' ./src/proto/todos.proto",
     "start": "parcel index.html"
   }
 }

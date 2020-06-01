@@ -31,7 +31,7 @@ export class RemoteTodosService implements IRemoteTodosService {
     });
   }
 
-  create = (title: string, body: string) => {
+  create(title: string, body: string) {
     const todo = new NewTodo();
     todo.setTitle(title);
     todo.setBody(body);
@@ -41,16 +41,17 @@ export class RemoteTodosService implements IRemoteTodosService {
         e ? rej(e) : res(resp)
       )
     );
-  };
+  }
 
-  list = () =>
-    new Promise<Todo[]>((res, rej) =>
+  list() {
+    return new Promise<Todo[]>((res, rej) =>
       this.client.list(new Todo(), this.headers, (e, resp) =>
         e ? rej(e) : res(resp.getTodosList())
       )
     );
+  }
 
-  update = (id: number, title: string, body: string, index: number) => {
+  update(id: number, title: string, body: string) {
     const todo = new Todo();
     todo.setId(id);
     todo.setTitle(title);
@@ -61,9 +62,9 @@ export class RemoteTodosService implements IRemoteTodosService {
         e ? rej(e) : res(resp)
       )
     );
-  };
+  }
 
-  delete = (id: number) => {
+  delete(id: number) {
     const todoID = new TodoID();
     todoID.setId(id);
 
@@ -72,9 +73,9 @@ export class RemoteTodosService implements IRemoteTodosService {
         e ? rej(e) : res(resp)
       )
     );
-  };
+  }
 
-  reorder = (id: number, offset: number) => {
+  reorder(id: number, offset: number) {
     const todoReorder = new TodoReorder();
     todoReorder.setId(id);
     todoReorder.setOffset(offset);
@@ -84,5 +85,5 @@ export class RemoteTodosService implements IRemoteTodosService {
         e ? rej(e) : res(resp)
       )
     );
-  };
+  }
 }

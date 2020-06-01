@@ -110,6 +110,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:0.3.2"
       ],
       [
+        "@types/uuid",
+        "npm:8.0.0"
+      ],
+      [
         "@yarnpkg/pnpify",
         "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"
       ],
@@ -184,6 +188,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       [
         "typescript",
         "patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=8cac75"
+      ],
+      [
+        "uuid",
+        "npm:8.1.0"
       ]
     ],
     "locationBlacklistData": [
@@ -213,6 +221,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/rebass__forms", "npm:4.0.2"],
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
+            ["@types/uuid", "npm:8.0.0"],
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
             ["browser-headers", "npm:0.4.1"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
@@ -231,7 +240,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["styled-components", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.0"],
             ["theme-ui", "npm:0.3.1"],
             ["ts-protoc-gen", "npm:0.12.0"],
-            ["typescript", "patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=8cac75"]
+            ["typescript", "patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=8cac75"],
+            ["uuid", "npm:8.1.0"]
           ],
           "linkType": "SOFT",
         }]
@@ -3548,6 +3558,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react", "npm:16.9.35"],
             ["@types/styled-system", "npm:5.1.9"],
             ["@types/theme-ui", "npm:0.3.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/uuid", [
+        ["npm:8.0.0", {
+          "packageLocation": "./.yarn/cache/@types-uuid-npm-8.0.0-904217d00f-3.zip/node_modules/@types/uuid/",
+          "packageDependencies": [
+            ["@types/uuid", "npm:8.0.0"]
           ],
           "linkType": "HARD",
         }]
@@ -7995,6 +8014,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/rebass__forms", "npm:4.0.2"],
             ["@types/styled-components", "npm:5.1.0"],
             ["@types/theme-ui", "npm:0.3.2"],
+            ["@types/uuid", "npm:8.0.0"],
             ["@yarnpkg/pnpify", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:2.0.0-rc.22"],
             ["browser-headers", "npm:0.4.1"],
             ["google-protobuf", "npm:3.12.0-rc.2"],
@@ -8013,7 +8033,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["styled-components", "virtual:1e020ef87d24d84a9ef8fa4f0ce1be10b0988a03762cb1627d9030d707358df3e7a3d0ba87bdf76f156cefe7b3eb85b00e69230b66fe13c8d8d47d33fad2826e#npm:5.1.0"],
             ["theme-ui", "npm:0.3.1"],
             ["ts-protoc-gen", "npm:0.12.0"],
-            ["typescript", "patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=8cac75"]
+            ["typescript", "patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=8cac75"],
+            ["uuid", "npm:8.1.0"]
           ],
           "linkType": "SOFT",
         }]
@@ -11389,6 +11410,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/uuid-npm-3.4.0-4fd8ef88ad-3.zip/node_modules/uuid/",
           "packageDependencies": [
             ["uuid", "npm:3.4.0"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:8.1.0", {
+          "packageLocation": "./.yarn/cache/uuid-npm-8.1.0-e66b0feced-3.zip/node_modules/uuid/",
+          "packageDependencies": [
+            ["uuid", "npm:8.1.0"]
           ],
           "linkType": "HARD",
         }]

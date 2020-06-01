@@ -6,18 +6,13 @@ export interface ITodo {
 }
 
 interface ILocalTodosService {
-  create: (
-    id: ITodo["id"],
-    title: ITodo["title"],
-    body: ITodo["body"],
-    index: ITodo["index"]
-  ) => ITodo;
+  readAll: (todos: ITodo[]) => void;
+  create: (title: ITodo["title"], body: ITodo["body"]) => ITodo;
   list: () => ITodo[];
   update: (
     id: ITodo["id"],
     title: ITodo["title"],
-    body: ITodo["body"],
-    index: ITodo["index"]
+    body: ITodo["body"]
   ) => ITodo;
   delete: (id: ITodo["id"]) => ITodo;
   reorder: (id: ITodo["id"], offset: number) => ITodo;
@@ -30,13 +25,17 @@ export class LocalTodosService implements ILocalTodosService {
     this.todos = [];
   }
 
-  create(
-    id: ITodo["id"],
-    title: ITodo["title"],
-    body: ITodo["body"],
-    index: ITodo["index"]
-  ) {
-    const todo = { id, title, body, index };
+  readAll(todos: ITodo[]) {
+    this.todos = todos;
+  }
+
+  create(title: ITodo["title"], body: ITodo["body"]) {
+    const todo = {
+      id: this.todos.length,
+      title,
+      body,
+      index: this.todos.length,
+    };
 
     this.todos.push(todo);
 
@@ -47,12 +46,7 @@ export class LocalTodosService implements ILocalTodosService {
     return this.todos;
   }
 
-  update(
-    id: ITodo["id"],
-    title: ITodo["title"],
-    body: ITodo["body"],
-    index: ITodo["index"]
-  ) {
+  update(id: ITodo["id"], title: ITodo["title"], body: ITodo["body"]) {
     const oldTodo = this.todos.find((t) => t.id == id);
 
     const newTodo = {
@@ -60,7 +54,6 @@ export class LocalTodosService implements ILocalTodosService {
       id: id || oldTodo.id,
       title: title || oldTodo.title,
       body: body || oldTodo.body,
-      index: index || oldTodo.index,
     };
 
     this.todos = this.todos.map((t) => (t.id == id ? newTodo : t));

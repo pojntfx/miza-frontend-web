@@ -24,19 +24,24 @@ export default () => {
   const [selectMode, setSelectMode] = React.useState(false);
   const [selectedTodos, setSelectedTodos] = React.useState<number[]>([]);
 
-  const localTodosService = new LocalTodosService();
-  const remoteTodosService = new RemoteTodosService(
-    process.env.API_ENDPOINT,
-    token
-  );
+  const [localTodosService, setLocalTodosService] = React.useState<
+    LocalTodosService
+  >();
+  const [remoteTodosService, setRemoteTodosService] = React.useState<
+    RemoteTodosService
+  >();
   const todosConverter = new TodosConverter();
 
   const refreshTodos = () => {
+    // Refresh remotely
     setLoading(true);
-
     remoteTodosService
       .list()
-      .then((d) => setTodos(d.map((t) => todosConverter.toInternal(t))))
+      .then((d) => {
+        // Refresh locally
+        localTodosService.readAll(d.map((t) => todosConverter.toInternal(t)));
+        setTodos(localTodosService.list());
+      })
       .catch((e) => console.error(e))
       .finally(() => setLoading(false));
   };
@@ -45,8 +50,12 @@ export default () => {
     const shouldDelete = confirm(`Do you want to delete todo ${title}?`);
 
     if (shouldDelete) {
-      setLoading(true);
+      // Delete locally
+      localTodosService.delete(id);
+      setTodos(localTodosService.list());
 
+      // Delete remotely
+      setLoading(true);
       remoteTodosService
         .delete(id)
         .then(() => refreshTodos())
@@ -59,8 +68,12 @@ export default () => {
     const shouldDelete = confirm(`Do you want to delete ${ids.length} todos?`);
 
     if (shouldDelete) {
-      setLoading(true);
+      // Delete locally
+      ids.forEach((id) => localTodosService.delete(id));
+      setTodos(localTodosService.list());
 
+      // Delete remotely
+      setLoading(true);
       Promise.all(ids.map((id) => remoteTodosService.delete(id)))
         .then(() => refreshTodos())
         .catch((e) => console.error(e))
@@ -68,9 +81,79 @@ export default () => {
     }
   };
 
+  const updateTodo = (
+    id: number,
+    title: string,
+    body: string,
+    afterLocalUpdate?: () => void
+  ) => {
+    // Update locally
+    localTodosService.update(id, title, body);
+    setTodos(localTodosService.list());
+
+    afterLocalUpdate && afterLocalUpdate();
+
+    // Update remotely
+    setLoading(true);
+    remoteTodosService
+      .update(id, title, body)
+      .then(() => refreshTodos())
+      .catch((e) => console.error(e))
+      .finally(() => setLoading(false));
+  };
+
+  const createTodo = (
+    title: string,
+    body: string,
+    afterLocalUpdate?: () => void
+  ) => {
+    // Create locally
+    localTodosService.create(title, body);
+    setTodos(localTodosService.list());
+
+    afterLocalUpdate && afterLocalUpdate();
+
+    // Create remotely
+    setLoading(true);
+    remoteTodosService
+      .create(title, body)
+      .then(() => refreshTodos())
+      .catch((e) => console.error(e))
+      .finally(() => setLoading(false));
+  };
+
+  const reorderTodo = (id: number, oldIndex: number, newIndex: number) => {
+    if (newIndex == oldIndex) {
+      return;
+    }
+
+    const offset = -(newIndex - oldIndex); // We are rendering reversed
+
+    // Reorder locally
+    localTodosService.reorder(id, offset);
+    setTodos(localTodosService.list());
+
+    // Reorder remotely
+    setLoading(true);
+    remoteTodosService
+      .reorder(id, offset)
+      .then(() => refreshTodos())
+      .catch((e) => console.error(e))
+      .finally(() => setLoading(false));
+  };
+
   React.useEffect(() => {
-    token && refreshTodos();
+    if (token) {
+      setLocalTodosService(new LocalTodosService());
+      setRemoteTodosService(
+        new RemoteTodosService(process.env.API_ENDPOINT, token)
+      );
+    }
   }, [token]);
+
+  React.useEffect(() => remoteTodosService && refreshTodos(), [
+    remoteTodosService,
+  ]);
 
   return token ? (
     <StyledComponentsThemeProvider theme={theme}>
@@ -89,19 +172,11 @@ export default () => {
                     <UpdateTodoPage
                       {...todo}
                       loading={loading}
-                      onSubmit={(id, title, body) => {
-                        setLoading(true);
-
-                        remoteTodosService
-                          .update(id, title, body)
-                          .then(() => refreshTodos())
-                          .catch((e) => console.error(e))
-                          .finally(() => {
-                            setLoading(false);
-
-                            return props.history.push("/");
-                          });
-                      }}
+                      onSubmit={(id, title, body) =>
+                        updateTodo(id, title, body, () =>
+                          props.history.push("/")
+                        )
+                      }
                       backPath="/"
                     />
                   )
@@ -130,19 +205,9 @@ export default () => {
               {withRouter((props) => (
                 <CreateTodoPage
                   loading={loading}
-                  onSubmit={(title, body) => {
-                    setLoading(true);
-
-                    remoteTodosService
-                      .create(title, body)
-                      .then(() => refreshTodos())
-                      .catch((e) => console.error(e))
-                      .finally(() => {
-                        setLoading(false);
-
-                        return props.history.push("/");
-                      });
-                  }}
+                  onSubmit={(title, body) =>
+                    createTodo(title, body, () => props.history.push("/"))
+                  }
                   backPath="/"
                 />
               ))}
@@ -156,31 +221,9 @@ export default () => {
                       todos.find((todo) => todo.id == id).body
                   )
                 }
-                onReorder={(id, oldIndex, newIndex) => {
-                  if (newIndex == oldIndex) {
-                    return;
-                  }
-
-                  const offset = -(newIndex - oldIndex); // We are rendering reversed
-
-                  // Update locally
-                  todos.forEach((t) =>
-                    localTodosService.create(t.id, t.title, t.body, t.index)
-                  );
-
-                  localTodosService.reorder(id, offset);
-
-                  setTodos(localTodosService.list());
-
-                  // Update remotely
-                  setLoading(true);
-
-                  remoteTodosService
-                    .reorder(id, offset)
-                    .then(() => refreshTodos())
-                    .catch((e) => console.error(e))
-                    .finally(() => setLoading(false));
-                }}
+                onReorder={(id, oldIndex, newIndex) =>
+                  reorderTodo(id, oldIndex, newIndex)
+                }
                 onSelect={(id) => {
                   if (selectedTodos.find((s) => s == id)) {
                     setSelectedTodos((s) => {

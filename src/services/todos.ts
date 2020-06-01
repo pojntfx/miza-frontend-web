@@ -1,5 +1,7 @@
+import { v4 } from "uuid";
+
 export interface ITodo {
-  id: number;
+  id: number | string;
   title: string;
   body: string;
   index: number;
@@ -31,7 +33,7 @@ export class LocalTodosService implements ILocalTodosService {
 
   create(title: ITodo["title"], body: ITodo["body"]) {
     const todo = {
-      id: this.todos.length,
+      id: v4(),
       title,
       body,
       index: this.todos.length,
@@ -51,7 +53,6 @@ export class LocalTodosService implements ILocalTodosService {
 
     const newTodo = {
       ...oldTodo,
-      id: id || oldTodo.id,
       title: title || oldTodo.title,
       body: body || oldTodo.body,
     };

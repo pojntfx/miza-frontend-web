@@ -9,7 +9,7 @@ var Todos = (function () {
   function Todos() {}
   Todos.serviceName = "todos.Todos";
   return Todos;
-})();
+}());
 
 Todos.Create = {
   methodName: "Create",
@@ -17,7 +17,7 @@ Todos.Create = {
   requestStream: false,
   responseStream: false,
   requestType: src_proto_todos_pb.NewTodo,
-  responseType: src_proto_todos_pb.Todo,
+  responseType: src_proto_todos_pb.Todo
 };
 
 Todos.List = {
@@ -26,7 +26,7 @@ Todos.List = {
   requestStream: false,
   responseStream: false,
   requestType: google_protobuf_empty_pb.Empty,
-  responseType: src_proto_todos_pb.TodoList,
+  responseType: src_proto_todos_pb.TodoList
 };
 
 Todos.Get = {
@@ -35,7 +35,7 @@ Todos.Get = {
   requestStream: false,
   responseStream: false,
   requestType: src_proto_todos_pb.TodoID,
-  responseType: src_proto_todos_pb.Todo,
+  responseType: src_proto_todos_pb.Todo
 };
 
 Todos.Update = {
@@ -44,7 +44,7 @@ Todos.Update = {
   requestStream: false,
   responseStream: false,
   requestType: src_proto_todos_pb.Todo,
-  responseType: src_proto_todos_pb.Todo,
+  responseType: src_proto_todos_pb.Todo
 };
 
 Todos.Delete = {
@@ -53,7 +53,7 @@ Todos.Delete = {
   requestStream: false,
   responseStream: false,
   requestType: src_proto_todos_pb.TodoID,
-  responseType: src_proto_todos_pb.Todo,
+  responseType: src_proto_todos_pb.Todo
 };
 
 Todos.Reorder = {
@@ -62,7 +62,16 @@ Todos.Reorder = {
   requestStream: false,
   responseStream: false,
   requestType: src_proto_todos_pb.TodoReorder,
-  responseType: src_proto_todos_pb.Todo,
+  responseType: src_proto_todos_pb.Todo
+};
+
+Todos.SubscribeToChanges = {
+  methodName: "SubscribeToChanges",
+  service: Todos,
+  requestStream: false,
+  responseStream: true,
+  requestType: google_protobuf_empty_pb.Empty,
+  responseType: src_proto_todos_pb.TodoChange
 };
 
 exports.Todos = Todos;
@@ -72,11 +81,7 @@ function TodosClient(serviceHost, options) {
   this.options = options || {};
 }
 
-TodosClient.prototype.create = function create(
-  requestMessage,
-  metadata,
-  callback
-) {
+TodosClient.prototype.create = function create(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
@@ -97,13 +102,13 @@ TodosClient.prototype.create = function create(
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
-    },
+    }
   };
 };
 
@@ -128,13 +133,13 @@ TodosClient.prototype.list = function list(requestMessage, metadata, callback) {
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
-    },
+    }
   };
 };
 
@@ -159,21 +164,17 @@ TodosClient.prototype.get = function get(requestMessage, metadata, callback) {
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
-    },
+    }
   };
 };
 
-TodosClient.prototype.update = function update(
-  requestMessage,
-  metadata,
-  callback
-) {
+TodosClient.prototype.update = function update(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
@@ -194,21 +195,17 @@ TodosClient.prototype.update = function update(
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
-    },
+    }
   };
 };
 
-TodosClient.prototype.delete = function pb_delete(
-  requestMessage,
-  metadata,
-  callback
-) {
+TodosClient.prototype.delete = function pb_delete(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
@@ -229,21 +226,17 @@ TodosClient.prototype.delete = function pb_delete(
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
-    },
+    }
   };
 };
 
-TodosClient.prototype.reorder = function reorder(
-  requestMessage,
-  metadata,
-  callback
-) {
+TodosClient.prototype.reorder = function reorder(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
@@ -264,14 +257,54 @@ TodosClient.prototype.reorder = function reorder(
           callback(null, response.message);
         }
       }
-    },
+    }
   });
   return {
     cancel: function () {
       callback = null;
       client.close();
+    }
+  };
+};
+
+TodosClient.prototype.subscribeToChanges = function subscribeToChanges(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(Todos.SubscribeToChanges, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
     },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
   };
 };
 
 exports.TodosClient = TodosClient;
+

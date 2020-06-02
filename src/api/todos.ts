@@ -104,10 +104,13 @@ export class RemoteTodosService implements IRemoteTodosService {
       switch (c.getType()) {
         case TodoChangeType.CREATE:
           onCreate(c.getTodo());
+          break;
         case TodoChangeType.UPDATE:
           onUpdate(c.getTodo());
+          break;
         case TodoChangeType.DELETE:
           onDelete(c.getTodo());
+          break;
       }
     });
   }

@@ -151,9 +151,26 @@ export default () => {
     }
   }, [token]);
 
-  React.useEffect(() => remoteTodosService && refreshTodos(), [
-    remoteTodosService,
-  ]);
+  React.useEffect(() => {
+    if (remoteTodosService) {
+      refreshTodos();
+
+      // remoteTodosService.subscribeToChanges(
+      //   (t) => {
+      //     localTodosService.create(t.getTitle(), t.getBody());
+      //     setTodos(localTodosService.list());
+      //   },
+      //   (t) => {
+      //     localTodosService.update(t.getId(), t.getTitle(), t.getBody());
+      //     setTodos(localTodosService.list());
+      //   },
+      //   (t) => {
+      //     localTodosService.delete(t.getId());
+      //     setTodos(localTodosService.list());
+      //   }
+      // );
+    }
+  }, [remoteTodosService]);
 
   return token ? (
     <StyledComponentsThemeProvider theme={theme}>

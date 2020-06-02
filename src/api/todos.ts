@@ -3,6 +3,7 @@ import {
   NewTodo,
   TodoID,
   TodoReorder,
+  TodoChangeType,
 } from "../proto/generated/src/proto/todos_pb";
 import { TodosClient } from "../proto/generated/src/proto/todos_pb_service";
 import { BrowserHeaders } from "browser-headers";
@@ -18,6 +19,11 @@ interface IRemoteTodosService {
   ) => Promise<Todo>;
   delete: (id: number) => Promise<Todo>;
   reorder: (id: number, offset: number) => Promise<Todo>;
+  subscribeToChanges: (
+    onCreate: (todo: Todo) => void,
+    onUpdate: (todo: Todo) => void,
+    onDelete: (todo: Todo) => void
+  ) => void;
 }
 
 export class RemoteTodosService implements IRemoteTodosService {
@@ -85,5 +91,24 @@ export class RemoteTodosService implements IRemoteTodosService {
         e ? rej(e) : res(resp)
       )
     );
+  }
+
+  subscribeToChanges(
+    onCreate: (todo: Todo) => void,
+    onUpdate: (todo: Todo) => void,
+    onDelete: (todo: Todo) => void
+  ) {
+    const res = this.client.subscribeToChanges(new Todo(), this.headers);
+
+    res.on("data", (c) => {
+      switch (c.getType()) {
+        case TodoChangeType.CREATE:
+          onCreate(c.getTodo());
+        case TodoChangeType.UPDATE:
+          onUpdate(c.getTodo());
+        case TodoChangeType.DELETE:
+          onDelete(c.getTodo());
+      }
+    });
   }
 }

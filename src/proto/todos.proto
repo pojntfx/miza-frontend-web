@@ -20,6 +20,8 @@ service Todos {
   rpc Delete(TodoID) returns (Todo);
   // Reorder reorders a todo
   rpc Reorder(TodoReorder) returns (Todo);
+  // SubscribeToChanges subscribes to all changes
+  rpc SubscribeToChanges(google.protobuf.Empty) returns (stream TodoChange);
 }
 
 // NewTodo is a new todo
@@ -46,4 +48,17 @@ message TodoID { int64 ID = 1; }
 message TodoReorder {
   int64 ID = 1;
   int64 Offset = 2;
+}
+
+// TodoChangeType is a change type
+enum TodoChangeType {
+  CREATE = 0;
+  UPDATE = 1;
+  DELETE = 2;
+}
+
+// TodoChange is a change with the changed todo
+message TodoChange {
+  TodoChangeType type = 1;
+  Todo todo = 2;
 }

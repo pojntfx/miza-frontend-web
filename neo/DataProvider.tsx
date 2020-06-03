@@ -16,6 +16,7 @@ export interface IDataProviderProps {
 }
 
 export interface IDataProviderDataProps {
+  loading: boolean;
   todos: ITodo[];
   createTodo: (title: ITodo["title"], body: ITodo["body"]) => Promise<ITodo>;
   updateTodo: (
@@ -195,6 +196,7 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   }, []);
 
   return children({
+    loading: todos ? false : true,
     todos,
     createTodo,
     deleteTodo,

@@ -15,7 +15,7 @@ export const App: React.FC<IAppProps> = ({
   <LoginProvider googleClientId={googleClientId}>
     {({ token }) => (
       <DataProvider apiEndpoint={apiEndpoint} token={token} {...otherProps}>
-        {({ todos, createTodo, updateTodo }) => (
+        {({ todos, createTodo, updateTodo, deleteTodo }) => (
           <>
             <button onClick={() => createTodo("Test title", "Test body")}>
               Create todo
@@ -29,7 +29,10 @@ export const App: React.FC<IAppProps> = ({
                 )
               }
             >
-              Update todo
+              Update todo 137
+            </button>
+            <button onClick={() => deleteTodo(todos[todos.length - 1].id)}>
+              Delete last todo
             </button>
             {JSON.stringify(todos)}
           </>

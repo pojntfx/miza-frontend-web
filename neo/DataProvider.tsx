@@ -4,6 +4,8 @@ import { TodosClient } from "../src/proto/generated/src/proto/todos_pb_service";
 import {
   Todo,
   TodoChangeType,
+  NewTodo,
+  TodoID,
 } from "../src/proto/generated/src/proto/todos_pb";
 
 export interface IDataProviderProps {
@@ -20,6 +22,7 @@ export interface IDataProviderDataProps {
     title: ITodo["title"],
     body: ITodo["body"]
   ) => Promise<ITodo>;
+  deleteTodo: (id: ITodo["id"]) => Promise<ITodo>;
 }
 
 export interface ITodo {
@@ -41,6 +44,9 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   >();
   const [updateTodo, setUpdateTodo] = React.useState<
     IDataProviderDataProps["updateTodo"]
+  >();
+  const [deleteTodo, setDeleteTodo] = React.useState<
+    IDataProviderDataProps["deleteTodo"]
   >();
 
   React.useEffect(() => {
@@ -105,7 +111,7 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
     });
 
     setCreateTodo(() => (title: ITodo["title"], body: ITodo["body"]) => {
-      const newTodo = new Todo();
+      const newTodo = new NewTodo();
       newTodo.setTitle(title);
       newTodo.setBody(body);
 
@@ -125,13 +131,13 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
 
     setUpdateTodo(
       () => (id: ITodo["id"], title: ITodo["title"], body: ITodo["body"]) => {
-        const newTodo = new Todo();
-        newTodo.setId(id);
-        newTodo.setTitle(title);
-        newTodo.setBody(body);
+        const todoToUpdate = new Todo();
+        todoToUpdate.setId(id);
+        todoToUpdate.setTitle(title);
+        todoToUpdate.setBody(body);
 
         return new Promise<ITodo>((res) =>
-          client.update(newTodo, headers, (e, createdTodo) =>
+          client.update(todoToUpdate, headers, (e, createdTodo) =>
             e
               ? console.error(e)
               : res({
@@ -144,7 +150,25 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
         );
       }
     );
+
+    setDeleteTodo(() => (id: ITodo["id"]) => {
+      const todoId = new TodoID();
+      todoId.setId(id);
+
+      return new Promise<ITodo>((res) =>
+        client.delete(todoId, headers, (e, deletedTodo) =>
+          e
+            ? console.error(e)
+            : res({
+                id: deletedTodo.getId(),
+                title: deletedTodo.getTitle(),
+                body: deletedTodo.getBody(),
+                index: deletedTodo.getIndex(),
+              })
+        )
+      );
+    });
   }, []);
 
-  return children({ todos, createTodo, updateTodo, ...otherProps });
+  return children({ todos, createTodo, deleteTodo, updateTodo, ...otherProps });
 };

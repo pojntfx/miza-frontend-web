@@ -18,7 +18,7 @@ export const LoginProvider: React.FC<ILoginProviderProps> = ({
   const [token, setToken] = React.useState("");
 
   return token ? (
-    children({ token })
+    children({ token, ...otherProps })
   ) : (
     <GoogleLogin
       onSuccess={(res) => setToken((res as any).tokenId)}

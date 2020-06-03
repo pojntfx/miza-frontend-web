@@ -6,6 +6,7 @@ import {
   TodoChangeType,
   NewTodo,
   TodoID,
+  TodoReorder,
 } from "../src/proto/generated/src/proto/todos_pb";
 
 export interface IDataProviderProps {
@@ -23,6 +24,7 @@ export interface IDataProviderDataProps {
     body: ITodo["body"]
   ) => Promise<ITodo>;
   deleteTodo: (id: ITodo["id"]) => Promise<ITodo>;
+  reorderTodo: (id: ITodo["id"], offset: number) => Promise<ITodo>;
 }
 
 export interface ITodo {
@@ -47,6 +49,9 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   >();
   const [deleteTodo, setDeleteTodo] = React.useState<
     IDataProviderDataProps["deleteTodo"]
+  >();
+  const [reorderTodo, setReorderTodo] = React.useState<
+    IDataProviderDataProps["reorderTodo"]
   >();
 
   React.useEffect(() => {
@@ -137,14 +142,14 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
         todoToUpdate.setBody(body);
 
         return new Promise<ITodo>((res) =>
-          client.update(todoToUpdate, headers, (e, createdTodo) =>
+          client.update(todoToUpdate, headers, (e, updatedTodo) =>
             e
               ? console.error(e)
               : res({
-                  id: createdTodo.getId(),
-                  title: createdTodo.getTitle(),
-                  body: createdTodo.getBody(),
-                  index: createdTodo.getIndex(),
+                  id: updatedTodo.getId(),
+                  title: updatedTodo.getTitle(),
+                  body: updatedTodo.getBody(),
+                  index: updatedTodo.getIndex(),
                 })
           )
         );
@@ -168,7 +173,33 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
         )
       );
     });
+
+    setReorderTodo(() => (id: ITodo["id"], offset: number) => {
+      const todoReorder = new TodoReorder();
+      todoReorder.setId(id);
+      todoReorder.setOffset(offset);
+
+      return new Promise<ITodo>((res) =>
+        client.reorder(todoReorder, headers, (e, reordered) =>
+          e
+            ? console.error(e)
+            : res({
+                id: reordered.getId(),
+                title: reordered.getTitle(),
+                body: reordered.getBody(),
+                index: reordered.getIndex(),
+              })
+        )
+      );
+    });
   }, []);
 
-  return children({ todos, createTodo, deleteTodo, updateTodo, ...otherProps });
+  return children({
+    todos,
+    createTodo,
+    deleteTodo,
+    updateTodo,
+    reorderTodo,
+    ...otherProps,
+  });
 };

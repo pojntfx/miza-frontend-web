@@ -14,11 +14,16 @@ export interface IDataProviderProps {
 
 export interface IDataProviderDataProps {
   todos: ITodo[];
-  createTodo: (todo: ITodo) => Promise<ITodo>;
+  createTodo: (title: ITodo["title"], body: ITodo["body"]) => Promise<ITodo>;
+  updateTodo: (
+    id: ITodo["id"],
+    title: ITodo["title"],
+    body: ITodo["body"]
+  ) => Promise<ITodo>;
 }
 
 export interface ITodo {
-  id?: number | string;
+  id?: number;
   title: string;
   body: string;
   index?: number;
@@ -30,9 +35,12 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   children,
   ...otherProps
 }) => {
-  const [todos, setTodos] = React.useState<ITodo[]>();
+  const [todos, setTodos] = React.useState<IDataProviderDataProps["todos"]>();
   const [createTodo, setCreateTodo] = React.useState<
-    (todo: ITodo) => Promise<ITodo>
+    IDataProviderDataProps["createTodo"]
+  >();
+  const [updateTodo, setUpdateTodo] = React.useState<
+    IDataProviderDataProps["updateTodo"]
   >();
 
   React.useEffect(() => {
@@ -96,10 +104,10 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
       }
     });
 
-    setCreateTodo(() => (todo: ITodo) => {
+    setCreateTodo(() => (title: ITodo["title"], body: ITodo["body"]) => {
       const newTodo = new Todo();
-      newTodo.setTitle(todo.title);
-      newTodo.setBody(todo.body);
+      newTodo.setTitle(title);
+      newTodo.setBody(body);
 
       return new Promise<ITodo>((res) =>
         client.create(newTodo, headers, (e, createdTodo) =>
@@ -114,7 +122,29 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
         )
       );
     });
+
+    setUpdateTodo(
+      () => (id: ITodo["id"], title: ITodo["title"], body: ITodo["body"]) => {
+        const newTodo = new Todo();
+        newTodo.setId(id);
+        newTodo.setTitle(title);
+        newTodo.setBody(body);
+
+        return new Promise<ITodo>((res) =>
+          client.update(newTodo, headers, (e, createdTodo) =>
+            e
+              ? console.error(e)
+              : res({
+                  id: createdTodo.getId(),
+                  title: createdTodo.getTitle(),
+                  body: createdTodo.getBody(),
+                  index: createdTodo.getIndex(),
+                })
+          )
+        );
+      }
+    );
   }, []);
 
-  return <div {...otherProps}>{children({ todos, createTodo })}</div>;
+  return children({ todos, createTodo, updateTodo, ...otherProps });
 };

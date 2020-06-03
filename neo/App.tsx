@@ -15,17 +15,21 @@ export const App: React.FC<IAppProps> = ({
   <LoginProvider googleClientId={googleClientId}>
     {({ token }) => (
       <DataProvider apiEndpoint={apiEndpoint} token={token} {...otherProps}>
-        {({ todos, createTodo }) => (
+        {({ todos, createTodo, updateTodo }) => (
           <>
+            <button onClick={() => createTodo("Test title", "Test body")}>
+              Create todo
+            </button>
             <button
               onClick={() =>
-                createTodo({
-                  title: "Test title",
-                  body: "Test body",
-                })
+                updateTodo(
+                  137,
+                  "Test title " + Date.now(),
+                  "Test body " + Date.now()
+                )
               }
             >
-              Create todo
+              Update todo
             </button>
             {JSON.stringify(todos)}
           </>

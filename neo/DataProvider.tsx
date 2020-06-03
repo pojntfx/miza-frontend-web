@@ -196,7 +196,7 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   }, []);
 
   return children({
-    loading: todos ? false : true,
+    loading: todos == undefined ? true : false,
     todos,
     createTodo,
     deleteTodo,

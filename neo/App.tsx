@@ -15,7 +15,7 @@ export const App: React.FC<IAppProps> = ({
   <LoginProvider googleClientId={googleClientId}>
     {({ token }) => (
       <DataProvider apiEndpoint={apiEndpoint} token={token} {...otherProps}>
-        {({ todos, createTodo, updateTodo, deleteTodo }) => (
+        {({ todos, createTodo, updateTodo, deleteTodo, reorderTodo }) => (
           <>
             <button onClick={() => createTodo("Test title", "Test body")}>
               Create todo
@@ -33,6 +33,9 @@ export const App: React.FC<IAppProps> = ({
             </button>
             <button onClick={() => deleteTodo(todos[todos.length - 1].id)}>
               Delete last todo
+            </button>
+            <button onClick={() => reorderTodo(137, 1)}>
+              Reorder todo 137
             </button>
             {JSON.stringify(todos)}
           </>

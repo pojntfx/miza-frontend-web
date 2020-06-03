@@ -14,13 +14,14 @@ export interface IDataProviderProps {
 
 export interface IDataProviderDataProps {
   todos: ITodo[];
+  createTodo: (todo: ITodo) => Promise<ITodo>;
 }
 
 export interface ITodo {
-  id: number | string;
+  id?: number | string;
   title: string;
   body: string;
-  index: number;
+  index?: number;
 }
 
 export const DataProvider: React.FC<IDataProviderProps> = ({
@@ -30,6 +31,9 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   ...otherProps
 }) => {
   const [todos, setTodos] = React.useState<ITodo[]>();
+  const [createTodo, setCreateTodo] = React.useState<
+    (todo: ITodo) => Promise<ITodo>
+  >();
 
   React.useEffect(() => {
     const headers = new BrowserHeaders({
@@ -91,7 +95,26 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
           break;
       }
     });
+
+    setCreateTodo(() => (todo: ITodo) => {
+      const newTodo = new Todo();
+      newTodo.setTitle(todo.title);
+      newTodo.setBody(todo.body);
+
+      return new Promise<ITodo>((res) =>
+        client.create(newTodo, headers, (e, createdTodo) =>
+          e
+            ? console.error(e)
+            : res({
+                id: createdTodo.getId(),
+                title: createdTodo.getTitle(),
+                body: createdTodo.getBody(),
+                index: createdTodo.getIndex(),
+              })
+        )
+      );
+    });
   }, []);
 
-  return <div {...otherProps}>{children({ todos })}</div>;
+  return <div {...otherProps}>{children({ todos, createTodo })}</div>;
 };

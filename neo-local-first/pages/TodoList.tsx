@@ -7,31 +7,30 @@ import { RemoteTodosService } from "../remote-services/todos";
 export interface ITodoListPageProps {}
 
 export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
-  const createFromRemote = useStoreActions(
-    (actions: Actions<ITodosStore>) => actions.createFromRemote
+  // Business logic
+  const todos = useStoreState((state: State<ITodosStore>) => state.todos);
+  const createTodo = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.createTodo
+  );
+
+  // Sync logic
+  const handleRemoteTodoCreate = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.handleRemoteTodoCreate
   );
   const setRemoteTodoService = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.setRemoteTodoService
   );
-
   React.useEffect(() => {
-    const remoteTodoService = new RemoteTodosService((todo) =>
-      createFromRemote(todo)
+    setRemoteTodoService(
+      new RemoteTodosService((todo) => handleRemoteTodoCreate(todo))
     );
-
-    setRemoteTodoService(remoteTodoService);
   }, []);
-
-  const todos = useStoreState((state: State<ITodosStore>) => state.todos);
-  const create = useStoreActions(
-    (actions: Actions<ITodosStore>) => actions.createFromLocal
-  );
 
   return (
     <div {...props}>
       <button
         onClick={() =>
-          create({ id: v4(), title: "asdf", body: "asdfasdfadsf" })
+          createTodo({ id: v4(), title: "asdf", body: "asdfasdfadsf" })
         }
       >
         Create Todo

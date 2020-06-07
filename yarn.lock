@@ -4359,6 +4359,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debounce@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "debounce@npm:1.2.0"
+  checksum: 3/3eb07f76c54f3563d9183aff9a28c61864aa65c3f5f17acc227ce28dc55fb96faa680aebe3c898af17d3e4dfb6cfb92df6179fa9d5566111b129e1de19cfc7e0
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -4631,6 +4638,25 @@ __metadata:
   version: 7.0.0
   resolution: "dotenv@npm:7.0.0"
   checksum: 3/6d7288f9b30e779928f16662c11a161738ead475852baea973754662ab5daccf89fed3d009fc1e32591b5ee946e805ef182453fdfbf1b87017d8fafe5ede5228
+  languageName: node
+  linkType: hard
+
+"easy-peasy@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "easy-peasy@npm:3.3.0"
+  dependencies:
+    debounce: ^1.2.0
+    immer-peasy: 3.1.3
+    is-plain-object: ^3.0.0
+    memoizerific: ^1.11.3
+    prop-types: ^15.6.2
+    redux: ^4.0.5
+    redux-thunk: ^2.3.0
+    symbol-observable: ^1.2.0
+    ts-toolbelt: ^6.1.6
+  peerDependencies:
+    react: ^16.8.0
+  checksum: 3/d0ad6d6213333170200f61e022ea4e3aaaeba8c5d5c04b4aa2fd5d9d260ceb1b7854c88e5581df46d57d3d8c4e65183db43a99f33b2b732e877de7e0808c9401
   languageName: node
   linkType: hard
 
@@ -5681,6 +5707,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"immer-peasy@npm:3.1.3":
+  version: 3.1.3
+  resolution: "immer-peasy@npm:3.1.3"
+  checksum: 3/61007cadd2ca64c44326ccd5fc53ac08b400ea077c60feb5ea9b974d1ac7a7d033fcf43b9274e0906ecaae6de1384d7efdec9ecfe9a15ad7f5efc43cf8312287
+  languageName: node
+  linkType: hard
+
 "import-fresh@npm:^2.0.0":
   version: 2.0.0
   resolution: "import-fresh@npm:2.0.0"
@@ -6013,6 +6046,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-plain-object@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "is-plain-object@npm:3.0.0"
+  dependencies:
+    isobject: ^4.0.0
+  checksum: 3/907951d69b31ab643b52ccc966ca68a6b9bb4396c4eece89d9670c71bc7a1fa54f27679b1952ef5b73da3460f777477fc48a3da6a8aaca2c3361c39694d6c511
+  languageName: node
+  linkType: hard
+
 "is-regex@npm:^1.0.5":
   version: 1.0.5
   resolution: "is-regex@npm:1.0.5"
@@ -6137,6 +6179,13 @@ __metadata:
   version: 3.0.1
   resolution: "isobject@npm:3.0.1"
   checksum: 3/b537a9ccdd8d40ec552fe7ff5db3731f1deb77581adf9beb8ae812f8d08acfa0e74b193159ac50fb01084d7ade06d114077f984e21b8340531241bf85be9a0ab
+  languageName: node
+  linkType: hard
+
+"isobject@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "isobject@npm:4.0.0"
+  checksum: 3/bfc8e8f6e2bebf7d85e4bec91497e24f87e6b33576d03e223ff6ce1679f5a7dc6f357fdb3e1c6c6d85fc6f0feac26acca9e9e7b0ab473ea60fa3f838c203ee01
   languageName: node
   linkType: hard
 
@@ -6503,6 +6552,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"map-or-similar@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "map-or-similar@npm:1.5.0"
+  checksum: 3/3d759eff8025ad5d1e96acc618379f4664be56abdcca1d4f08a8e8df7c3ca6359acbc117611279d972405c0b4347ab28a6724c666dd25006f745bf487dc261d7
+  languageName: node
+  linkType: hard
+
 "map-visit@npm:^1.0.0":
   version: 1.0.0
   resolution: "map-visit@npm:1.0.0"
@@ -6541,6 +6597,15 @@ __metadata:
   version: 5.1.1
   resolution: "memoize-one@npm:5.1.1"
   checksum: 3/e7c4a9cceca71334bf09c38818c375a280dc6e8ec03a92701c16199763269ce756b7b0b370f4b464c071045349fb7b3e4a3cc7460a3f46a277f394d8634a6eb5
+  languageName: node
+  linkType: hard
+
+"memoizerific@npm:^1.11.3":
+  version: 1.11.3
+  resolution: "memoizerific@npm:1.11.3"
+  dependencies:
+    map-or-similar: ^1.5.0
+  checksum: 3/6601aab4719d269884882b24fc94d33da054817b6472b586dc9117773661abf838f838f5b80d202b8d84f942bcac63421a3044ef31f1af9790eed3f32e33eac6
   languageName: node
   linkType: hard
 
@@ -6739,6 +6804,7 @@ __metadata:
     "@types/uuid": ^8.0.0
     "@yarnpkg/pnpify": ^2.0.0-rc.22
     browser-headers: ^0.4.1
+    easy-peasy: ^3.3.0
     google-protobuf: ^3.12.0-rc.2
     parcel: nightly
     prop-types: ^15.7.2
@@ -8349,7 +8415,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.4":
+"redux-thunk@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "redux-thunk@npm:2.3.0"
+  checksum: 3/2d7210b88cef244384ab15bfe0c0f79a7d5a2fe059825da121121ec75378b175860695fafd5265386a0fd4b86212cc49e5972825f7bc9f803ad8753229f0258b
+  languageName: node
+  linkType: hard
+
+"redux@npm:^4.0.4, redux@npm:^4.0.5":
   version: 4.0.5
   resolution: "redux@npm:4.0.5"
   dependencies:
@@ -9515,6 +9588,13 @@ __metadata:
   bin:
     protoc-gen-ts: bin/protoc-gen-ts
   checksum: 3/8c53d79eb3d9890cf665f9f0fadf5bd075a283014383c5ca5bf95ccb8d2bf58101e0c890f7885035b13e8e083e5f7fe1a546d9df42200f956413e1dbcf29af39
+  languageName: node
+  linkType: hard
+
+"ts-toolbelt@npm:^6.1.6":
+  version: 6.9.4
+  resolution: "ts-toolbelt@npm:6.9.4"
+  checksum: 3/9457067a54a15f8d056519ed58ba47247fb8aeaa088b9243818bb1567641246e096833bc639666ebd658fab4bfd3667c7bb8ffe2c0831341ac8c756dffde0e70
   languageName: node
   linkType: hard
 

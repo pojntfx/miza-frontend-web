@@ -1,6 +1,5 @@
-import { ILocalTodo } from "../local-services/todos";
 import { Action, createStore, action, actionOn, ActionOn } from "easy-peasy";
-import { IRemoteTodo, IRemoteTodosService } from "../remote-services/todos";
+import { IRemoteTodo, IRemoteTodosService } from "../services/todos";
 import { v4 } from "uuid";
 
 export interface ITodosStore {
@@ -32,8 +31,6 @@ export const todosStore = createStore<ITodosStore>({
     s.remoteTodosService = p;
   }),
   handleRemoteTodoCreate: action((s, p) => {
-    console.log("ID mappings to work with", s.idMappings);
-
     let foundMatchingId = false;
 
     s.idMappings.forEach((mapping) => {
@@ -41,8 +38,6 @@ export const todosStore = createStore<ITodosStore>({
     });
 
     if (!foundMatchingId) {
-      console.log("Creating from remote", s, p); // do nothing if local store already includes this ID, otherwise generate local ID and add
-
       const localId = v4();
 
       s.idMappings.set(localId, p.id);
@@ -60,18 +55,15 @@ export const todosStore = createStore<ITodosStore>({
   onCreateTodo: actionOn(
     (actions) => actions.createTodo,
     (s, { payload }) => {
-      console.log("Calling remote and updating ID mappings", s, payload); // this has to finish first, use local ID in request here
-
-      console.log("Old ID mappings", s.idMappings);
-
       const newTodo = s.remoteTodosService.create(payload);
 
       s.idMappings.set(payload.id, newTodo.id);
-
-      console.log("New ID mappings", s.idMappings);
     }
   ),
-  // all actions that are not "create" should ALWAYS use a dictionary lookup
-
-  // all other remote action side effects now simply have to wait until the id's id mapper key no longer matches the value et voilà!
 });
+
+export interface ILocalTodo {
+  id: string | number;
+  title: string;
+  body: string;
+}

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useStoreState, State, useStoreActions, Actions } from "easy-peasy";
 import { ITodosStore } from "../stores/todos";
 import { v4 } from "uuid";
-import { RemoteTodosService } from "../remote-services/todos";
+import { RemoteTodosService } from "../services/todos";
 
 export interface ITodoListPageProps {}
 

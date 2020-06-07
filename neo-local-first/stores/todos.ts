@@ -1,10 +1,6 @@
 import { ILocalTodo } from "../local-services/todos";
 import { Action, createStore, action, actionOn, ActionOn } from "easy-peasy";
-import {
-  IRemoteTodo,
-  IRemoteTodosService,
-  RemoteTodosService,
-} from "../remote-services/todos";
+import { IRemoteTodo, IRemoteTodosService } from "../remote-services/todos";
 
 export interface ITodosStore {
   todos: ILocalTodo[];
@@ -44,6 +40,18 @@ export const todosStore = createStore<ITodosStore>({
   ),
   // all actions that are not "create" should ALWAYS use a dictionary lookup
   createFromRemote: action((s, p) => {
-    console.log("Creating from remote", s, p); // do nothing if local store already includes this ID, otherwise generate local ID and add
+    console.log("ID mappings to work with", s.idMappings);
+
+    let foundMatchingId = false;
+
+    s.idMappings.forEach((mapping) => {
+      if (mapping.valueOf() == p.id) foundMatchingId = true;
+    });
+
+    if (!foundMatchingId) {
+      console.log("Creating from remote", s, p); // do nothing if local store already includes this ID, otherwise generate local ID and add
+
+      s.todos.push(p);
+    }
   }),
 });

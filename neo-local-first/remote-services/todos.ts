@@ -18,6 +18,16 @@ export class RemoteTodosService implements IRemoteTodosService {
   constructor(onCreated: (todo: IRemoteTodo) => void) {
     this.todos = [];
     this.onCreated = onCreated;
+
+    setInterval(
+      () =>
+        this.onCreated({
+          id: new Date().getTime(),
+          title: new Date().toLocaleDateString(),
+          body: new Date().toLocaleTimeString(),
+        }),
+      1000
+    );
   }
 
   create(todo: IRemoteNewTodo) {

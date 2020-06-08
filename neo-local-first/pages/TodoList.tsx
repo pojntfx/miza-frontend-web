@@ -18,6 +18,9 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
   const updateTodo = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.updateTodo
   );
+  const reorderTodo = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.reorderTodo
+  );
 
   // Sync logic
   const handleRemoteTodoCreate = useStoreActions(
@@ -70,10 +73,18 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
       >
         Update first Todo
       </button>
+      <button onClick={() => reorderTodo({ ...todos[0], offset: -1 })}>
+        Reorder first Todo backwards
+      </button>
+      <button onClick={() => reorderTodo({ ...todos[0], offset: 1 })}>
+        Reorder first Todo forwards
+      </button>
       <ul>
-        {todos.map((todo, i) => (
-          <li key={i}>{JSON.stringify(todo)}</li>
-        ))}
+        {todos
+          .sort((a, b) => a.index - b.index)
+          .map((todo, i) => (
+            <li key={i}>{JSON.stringify(todo)}</li>
+          ))}
       </ul>
     </div>
   );

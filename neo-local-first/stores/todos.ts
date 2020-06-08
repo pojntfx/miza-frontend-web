@@ -8,6 +8,7 @@ export interface ITodosStore {
   createTodo: Action<ITodosStore, ILocalTodo>;
   deleteTodo: Action<ITodosStore, ILocalTodo>;
   updateTodo: Action<ITodosStore, ILocalTodo>;
+  reorderTodo: Action<ITodosStore, ILocalTodoReorder>;
 
   // Sync logic
   setRemoteTodoService: Action<ITodosStore, IRemoteTodosService>;
@@ -19,6 +20,7 @@ export interface ITodosStore {
   onCreateTodo: ActionOn<ITodosStore, ILocalTodo>;
   onDeleteTodo: ActionOn<ITodosStore, ILocalTodo>;
   onUpdateTodo: ActionOn<ITodosStore, ILocalTodo>;
+  onReorderTodo: ActionOn<ITodosStore, ILocalTodoReorder>;
 
   // Internal helpers
   idMappings: Map<ILocalTodo["id"], IRemoteTodo["id"]>;
@@ -29,8 +31,6 @@ export const todosStore = createStore<ITodosStore>({
   // Business logic
   todos: [],
   createTodo: action((s, p) => {
-    console.log("Local todos:", s.todos.length);
-
     s.todos.push(p);
 
     s.idMappings.set(p.id, p.id);
@@ -47,6 +47,21 @@ export const todosStore = createStore<ITodosStore>({
     if (p.body) todoToUpdate.body = p.body;
 
     s.todos = s.todos.map((t) => (t.id == todoToUpdate.id ? todoToUpdate : t));
+  }),
+  reorderTodo: action((s, p) => {
+    const oldTodo = s.todos.find((t) => t.id == p.id);
+    const newIndex = oldTodo.index + p.offset;
+
+    const updatedTodos = s.todos
+      .filter((t) =>
+        p.offset > 0
+          ? t.index >= oldTodo.index && t.index <= newIndex
+          : t.index <= oldTodo.index && t.index >= newIndex
+      )
+      .map((t) => ({ ...t, index: p.offset > 0 ? t.index - 1 : t.index + 1 }))
+      .map((t) => (t.id == p.id ? { ...t, index: newIndex } : t));
+
+    s.todos = s.todos.map((t) => updatedTodos.find((u) => u.id == t.id) || t);
   }),
 
   // Sync logic
@@ -92,9 +107,15 @@ export const todosStore = createStore<ITodosStore>({
 
       if (p.title) todoToUpdate.title = p.title;
       if (p.body) todoToUpdate.body = p.body;
+      todoToUpdate.index = p.index;
 
       s.todos = s.todos.map((t) =>
         t.id == todoToUpdate.id ? todoToUpdate : t
+      );
+
+      console.log(
+        "Local todos:",
+        s.todos.map((t) => t.index)
       );
     }
   }),
@@ -119,7 +140,7 @@ export const todosStore = createStore<ITodosStore>({
   onDeleteTodo: actionOn(
     (actions) => actions.deleteTodo,
     (s, { payload }) => {
-      // Wait until s.idMappings.get(payload.id) != payload.id
+      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
       s.remoteTodosService.delete({
         ...payload,
         id: s.idMappings.get(payload.id),
@@ -129,10 +150,21 @@ export const todosStore = createStore<ITodosStore>({
   onUpdateTodo: actionOn(
     (actions) => actions.updateTodo,
     (s, { payload }) => {
-      // Wait until s.idMappings.get(payload.id) != payload.id
+      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
       s.remoteTodosService.update({
         ...payload,
         id: s.idMappings.get(payload.id),
+      });
+    }
+  ),
+  onReorderTodo: actionOn(
+    (actions) => actions.reorderTodo,
+    (s, { payload }) => {
+      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
+      s.remoteTodosService.reorder({
+        ...payload,
+        id: s.idMappings.get(payload.id),
+        offset: payload.offset,
       });
     }
   ),
@@ -147,4 +179,8 @@ export interface ILocalTodo {
   title: string;
   body: string;
   index: number;
+}
+
+export interface ILocalTodoReorder extends ILocalTodo {
+  offset: number;
 }

@@ -15,6 +15,9 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
   const deleteTodo = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.deleteTodo
   );
+  const updateTodo = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.updateTodo
+  );
 
   // Sync logic
   const handleRemoteTodoCreate = useStoreActions(
@@ -23,6 +26,9 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
   const handleRemoteTodoDelete = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.handleRemoteTodoDelete
   );
+  const handleRemoteTodoUpdate = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.handleRemoteTodoUpdate
+  );
   const setRemoteTodoService = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.setRemoteTodoService
   );
@@ -30,7 +36,8 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
     setRemoteTodoService(
       new RemoteTodosService(
         (todo) => handleRemoteTodoCreate(todo),
-        (todo) => handleRemoteTodoDelete(todo)
+        (todo) => handleRemoteTodoDelete(todo),
+        (todo) => handleRemoteTodoUpdate(todo)
       )
     );
   }, []);
@@ -47,9 +54,20 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
       <button onClick={() => deleteTodo(todos[todos.length - 1])}>
         Delete last Todo
       </button>
+      <button onClick={() => deleteTodo(todos[0])}>Delete first Todo</button>
+      <button
+        onClick={() =>
+          updateTodo({
+            ...todos[0],
+            title: new Date().toLocaleString() + "from user",
+          })
+        }
+      >
+        Update first Todo
+      </button>
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{JSON.stringify(todo)}</li>
+        {todos.map((todo, i) => (
+          <li key={i}>{JSON.stringify(todo)}</li>
         ))}
       </ul>
     </div>

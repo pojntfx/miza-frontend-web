@@ -12,17 +12,26 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
   const createTodo = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.createTodo
   );
+  const deleteTodo = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.deleteTodo
+  );
 
   // Sync logic
   const handleRemoteTodoCreate = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.handleRemoteTodoCreate
+  );
+  const handleRemoteTodoDelete = useStoreActions(
+    (actions: Actions<ITodosStore>) => actions.handleRemoteTodoDelete
   );
   const setRemoteTodoService = useStoreActions(
     (actions: Actions<ITodosStore>) => actions.setRemoteTodoService
   );
   React.useEffect(() => {
     setRemoteTodoService(
-      new RemoteTodosService((todo) => handleRemoteTodoCreate(todo))
+      new RemoteTodosService(
+        (todo) => handleRemoteTodoCreate(todo),
+        (todo) => handleRemoteTodoDelete(todo)
+      )
     );
   }, []);
 
@@ -34,6 +43,9 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
         }
       >
         Create Todo
+      </button>
+      <button onClick={() => deleteTodo(todos[todos.length - 1])}>
+        Delete last Todo
       </button>
       <ul>
         {todos.map((todo) => (

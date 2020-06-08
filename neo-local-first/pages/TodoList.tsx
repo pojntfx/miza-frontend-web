@@ -59,10 +59,10 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
       >
         Create Todo
       </button>
+      <button onClick={() => deleteTodo(todos[0])}>Delete first Todo</button>
       <button onClick={() => deleteTodo(todos[todos.length - 1])}>
         Delete last Todo
       </button>
-      <button onClick={() => deleteTodo(todos[0])}>Delete first Todo</button>
       <button
         onClick={() =>
           updateTodo({

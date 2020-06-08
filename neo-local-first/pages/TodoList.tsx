@@ -36,13 +36,15 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
     (actions: Actions<ITodosStore>) => actions.setRemoteTodoService
   );
   React.useEffect(() => {
-    setRemoteTodoService(
-      new RemoteTodosService(
-        (todo) => handleRemoteTodoCreate(todo),
-        (todo) => handleRemoteTodoDelete(todo),
-        (todo) => handleRemoteTodoUpdate(todo)
-      )
+    const remoteTodosService = new RemoteTodosService(
+      (todo) => handleRemoteTodoCreate(todo),
+      (todo) => handleRemoteTodoDelete(todo),
+      (todo) => handleRemoteTodoUpdate(todo)
     );
+
+    remoteTodosService.subscribeToChanges();
+
+    setRemoteTodoService(remoteTodosService);
   }, []);
 
   return (

@@ -69,11 +69,21 @@ export class RemoteTodosService implements IRemoteTodosService {
   }
 
   delete(todo: IRemoteTodo) {
+    const todoToDelete = this.todos.find((t) => t.id == todo.id);
+
     this.todos = this.todos.filter((t) => t.id != todo.id);
 
     setTimeout(() => this.onDeleted(todo), 0);
 
-    // TODO: Recalculate indexes for todos with higher index and send updates
+    const updatedTodos = this.todos
+      .filter((t) => t.index >= todoToDelete.index)
+      .map((t) => ({ ...t, index: t.index - 1 }));
+
+    this.todos = this.todos.map(
+      (t) => updatedTodos.find((u) => u.id == t.id) || t
+    );
+
+    updatedTodos.forEach((t) => setTimeout(() => this.onUpdated(t), 0));
   }
 
   update(todo: IRemoteTodo) {

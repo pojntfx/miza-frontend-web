@@ -36,9 +36,15 @@ export const todosStore = createStore<ITodosStore>({
     s.idMappings.set(p.id, p.id);
   }),
   deleteTodo: action((s, p) => {
+    const todoToDelete = s.todos.find((t) => t.id == p.id);
+
     s.todos = s.todos.filter((t) => t.id != p.id);
 
-    // TODO: Recalculate indexes for todos with higher index
+    const updatedTodos = s.todos
+      .filter((t) => t.index >= todoToDelete.index)
+      .map((t) => ({ ...t, index: t.index - 1 }));
+
+    s.todos = s.todos.map((t) => updatedTodos.find((u) => u.id == t.id) || t);
   }),
   updateTodo: action((s, p) => {
     const todoToUpdate = s.todos.find((t) => t.id == p.id);

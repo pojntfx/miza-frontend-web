@@ -1,5 +1,6 @@
 export interface IRemoteTodo extends IRemoteNewTodo {
   id: string | number;
+  index: number;
 }
 
 export interface IRemoteNewTodo {
@@ -53,7 +54,11 @@ export class RemoteTodosService implements IRemoteTodosService {
   create(todo: IRemoteNewTodo) {
     console.log("Remote todos:", this.todos.length);
 
-    const newTodo = { ...todo, id: new Date().getTime() };
+    const newTodo = {
+      ...todo,
+      id: new Date().getTime(),
+      index: this.todos.length + 1,
+    };
 
     this.todos.push(newTodo);
 
@@ -66,6 +71,8 @@ export class RemoteTodosService implements IRemoteTodosService {
     this.todos = this.todos.filter((t) => t.id != todo.id);
 
     setTimeout(() => this.onDeleted(todo), 0);
+
+    // TODO: Recalculate indexes for todos with higher index
   }
 
   update(todo: IRemoteTodo) {

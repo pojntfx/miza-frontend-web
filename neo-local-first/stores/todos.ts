@@ -37,6 +37,8 @@ export const todosStore = createStore<ITodosStore>({
   }),
   deleteTodo: action((s, p) => {
     s.todos = s.todos.filter((t) => t.id != p.id);
+
+    // TODO: Recalculate indexes for todos with higher index
   }),
   updateTodo: action((s, p) => {
     const todoToUpdate = s.todos.find((t) => t.id == p.id);
@@ -103,6 +105,14 @@ export const todosStore = createStore<ITodosStore>({
     (s, { payload }) => {
       const newTodo = s.remoteTodosService.create(payload);
 
+      const todoToUpdate = s.todos.find((t) => t.id == payload.id);
+
+      todoToUpdate.index = newTodo.index;
+
+      s.todos = s.todos.map((t) =>
+        t.id == todoToUpdate.id ? todoToUpdate : t
+      );
+
       s.idMappings.set(payload.id, newTodo.id);
     }
   ),
@@ -136,4 +146,5 @@ export interface ILocalTodo {
   id: string | number;
   title: string;
   body: string;
+  index: number;
 }

@@ -3,6 +3,7 @@ export interface IRemoteTodosService {
   delete: (todo: IRemoteTodo) => void;
   update: (todo: IRemoteTodo) => void;
   reorder: (todo: IRemoteTodoReorder) => void;
+  subscribeToChanges: () => void;
 }
 
 export class RemoteTodosService implements IRemoteTodosService {
@@ -20,33 +21,6 @@ export class RemoteTodosService implements IRemoteTodosService {
     this.onCreated = onCreated;
     this.onDeleted = onDeleted;
     this.onUpdated = onUpdated;
-
-    setInterval(
-      () =>
-        this.create({
-          title: new Date().toLocaleDateString() + "from remote",
-          body: new Date().toLocaleTimeString(),
-        }),
-      500
-    );
-
-    setInterval(() => {
-      this.delete(this.todos[this.todos.length - 1]);
-    }, 1000);
-
-    setInterval(() => {
-      this.update({
-        ...this.todos[0],
-        title: new Date().toLocaleString() + "from service",
-      });
-    }, 1500);
-
-    setInterval(() => {
-      this.reorder({
-        ...this.todos[0],
-        offset: 1,
-      });
-    }, 2000);
   }
 
   create(todo: IRemoteNewTodo) {
@@ -120,6 +94,35 @@ export class RemoteTodosService implements IRemoteTodosService {
     );
 
     updatedTodos.forEach((t) => setTimeout(() => this.onUpdated(t), 0));
+  }
+
+  subscribeToChanges() {
+    setInterval(
+      () =>
+        this.create({
+          title: new Date().toLocaleDateString() + "from remote",
+          body: new Date().toLocaleTimeString(),
+        }),
+      500
+    );
+
+    setInterval(() => {
+      this.delete(this.todos[this.todos.length - 1]);
+    }, 1000);
+
+    setInterval(() => {
+      this.update({
+        ...this.todos[0],
+        title: new Date().toLocaleString() + "from service",
+      });
+    }, 1500);
+
+    setInterval(() => {
+      this.reorder({
+        ...this.todos[0],
+        offset: 1,
+      });
+    }, 2000);
   }
 }
 

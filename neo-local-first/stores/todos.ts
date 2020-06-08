@@ -26,6 +26,8 @@ export const todosStore = createStore<ITodosStore>({
   // Business logic
   todos: [],
   createTodo: action((s, p) => {
+    console.log("Local todos:", s.todos.length);
+
     s.todos.push(p);
 
     s.idMappings.set(p.id, p.id);
@@ -82,7 +84,11 @@ export const todosStore = createStore<ITodosStore>({
   onDeleteTodo: actionOn(
     (actions) => actions.deleteTodo,
     (s, { payload }) => {
-      s.remoteTodosService.delete(payload);
+      // Wait until s.idMappings.get(payload.id) != payload.id
+      s.remoteTodosService.delete({
+        ...payload,
+        id: s.idMappings.get(payload.id),
+      });
     }
   ),
 });

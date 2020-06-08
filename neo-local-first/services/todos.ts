@@ -40,6 +40,8 @@ export class RemoteTodosService implements IRemoteTodosService {
   }
 
   create(todo: IRemoteNewTodo) {
+    console.log("Remote todos:", this.todos.length);
+
     const newTodo = { ...todo, id: new Date().getTime() };
 
     this.todos.push(newTodo);

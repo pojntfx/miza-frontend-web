@@ -146,32 +146,71 @@ export const todosStore = createStore<ITodosStore>({
   onDeleteTodo: actionOn(
     (actions) => actions.deleteTodo,
     (s, { payload }) => {
-      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
-      s.remoteTodosService.delete({
-        ...payload,
-        id: s.idMappings.get(payload.id),
-      });
+      const deleteRemotelyAfterConditionIsMet = (ready: boolean) => {
+        ready
+          ? s.remoteTodosService.delete({
+              ...payload,
+              id: s.idMappings.get(payload.id),
+            })
+          : setTimeout(
+              () =>
+                deleteRemotelyAfterConditionIsMet(
+                  s.idMappings.get(payload.id) != payload.id
+                ),
+              100
+            );
+      };
+
+      deleteRemotelyAfterConditionIsMet(
+        s.idMappings.get(payload.id) != payload.id
+      );
     }
   ),
   onUpdateTodo: actionOn(
     (actions) => actions.updateTodo,
     (s, { payload }) => {
-      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
-      s.remoteTodosService.update({
-        ...payload,
-        id: s.idMappings.get(payload.id),
-      });
+      const updateRemotelyAfterConditionIsMet = (ready: boolean) => {
+        ready
+          ? s.remoteTodosService.update({
+              ...payload,
+              id: s.idMappings.get(payload.id),
+            })
+          : setTimeout(
+              () =>
+                updateRemotelyAfterConditionIsMet(
+                  s.idMappings.get(payload.id) != payload.id
+                ),
+              100
+            );
+      };
+
+      updateRemotelyAfterConditionIsMet(
+        s.idMappings.get(payload.id) != payload.id
+      );
     }
   ),
   onReorderTodo: actionOn(
     (actions) => actions.reorderTodo,
     (s, { payload }) => {
-      // TODO: Wait until s.idMappings.get(payload.id) != payload.id
-      s.remoteTodosService.reorder({
-        ...payload,
-        id: s.idMappings.get(payload.id),
-        offset: payload.offset,
-      });
+      const reorderRemotelyAfterConditionIsMet = (ready: boolean) => {
+        ready
+          ? s.remoteTodosService.reorder({
+              ...payload,
+              id: s.idMappings.get(payload.id),
+              offset: payload.offset,
+            })
+          : setTimeout(
+              () =>
+                reorderRemotelyAfterConditionIsMet(
+                  s.idMappings.get(payload.id) != payload.id
+                ),
+              100
+            );
+      };
+
+      reorderRemotelyAfterConditionIsMet(
+        s.idMappings.get(payload.id) != payload.id
+      );
     }
   ),
 

@@ -46,7 +46,12 @@ export const TodoListPage: React.FC<ITodoListPageProps> = (props) => {
     <div {...props}>
       <button
         onClick={() =>
-          createTodo({ id: v4(), title: "asdf", body: "asdfasdfadsf" })
+          createTodo({
+            id: v4(),
+            title: "asdf",
+            body: "asdfasdfadsf",
+            index: todos.length + 1,
+          })
         }
       >
         Create Todo

@@ -5,7 +5,9 @@ import { EventEmitter } from "events";
 
 export interface TodosServiceConnector extends EventEmitter {
   create(todo: TodoLocal): Promise<void>;
+  delete(id: TodoLocal["id"]): Promise<void>;
   on(event: "created", listener: (todo: TodoLocal) => void): this;
+  on(event: "deleted", listener: (id: TodoLocal["id"]) => void): this;
 }
 
 @injectable()
@@ -31,6 +33,20 @@ export class TodosServiceConnectorImpl extends EventEmitter
         this.emit("created", { id: todo.id, title: todo.title });
       }
     });
+
+    this.remote.on("deleted", async (id) => {
+      let exists = false;
+
+      this.idmapper.forEach((externalId) => {
+        if (id == externalId) {
+          exists = true;
+        }
+      });
+
+      if (exists) {
+        this.emit("deleted", id);
+      }
+    });
   }
 
   async create(todo: TodoLocal) {
@@ -41,5 +57,12 @@ export class TodosServiceConnectorImpl extends EventEmitter
 
       this.idmapper.set(todo.id, remoteTodo.id);
     }, 500); // Mock latency of RPC
+  }
+
+  async delete(id: TodoLocal["id"]) {
+    setTimeout(
+      async () => await this.remote.delete(this.idmapper.get(id)),
+      500
+    ); // Mock latency of RPC
   }
 }

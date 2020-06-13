@@ -21,6 +21,12 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
       setTodos((oldTodos) => oldTodos.filter((todo) => todo.id != id))
     );
 
+    todosServiceLocal.on("updated", async (todo) =>
+      setTodos((oldTodos) =>
+        oldTodos.map((oldTodo) => (oldTodo.id == todo.id ? todo : oldTodo))
+      )
+    );
+
     setTodosService(todosServiceLocal);
   }, []);
 
@@ -35,6 +41,17 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
       </button>
       <button onClick={() => todosService.delete(todos[todos.length - 1].id)}>
         Delete last todo
+      </button>
+
+      <button
+        onClick={() =>
+          todosService.update({
+            ...todos[todos.length - 1],
+            title: new Date().toLocaleString(),
+          })
+        }
+      >
+        Update last todo
       </button>
 
       <ul>

@@ -6,8 +6,11 @@ import { EventEmitter } from "events";
 export interface TodosServiceConnector extends EventEmitter {
   create(todo: TodoLocal): Promise<void>;
   delete(id: TodoLocal["id"]): Promise<void>;
+  update(todo: TodoLocal): Promise<void>;
   on(event: "created", listener: (todo: TodoLocal) => void): this;
   on(event: "deleted", listener: (id: TodoLocal["id"]) => void): this;
+  on(event: "updated", listener: (todo: TodoLocal) => void): this;
+  setId(localId: TodoLocal["id"], remoteId: TodoRemote["id"]): Promise<void>;
 }
 
 @injectable()
@@ -23,8 +26,8 @@ export class TodosServiceConnectorImpl extends EventEmitter
     this.remote.on("created", async (todo) => {
       let exists = false;
 
-      this.idmapper.forEach((externalId) => {
-        if (todo.id == externalId) {
+      this.idmapper.forEach((remoteId) => {
+        if (todo.id == remoteId) {
           exists = true;
         }
       });
@@ -35,16 +38,30 @@ export class TodosServiceConnectorImpl extends EventEmitter
     });
 
     this.remote.on("deleted", async (id) => {
-      let exists = false;
+      let matchingId = "";
 
-      this.idmapper.forEach((externalId) => {
-        if (id == externalId) {
-          exists = true;
+      this.idmapper.forEach((remoteId, localId) => {
+        if (id == remoteId) {
+          matchingId = localId;
         }
       });
 
-      if (exists) {
-        this.emit("deleted", id);
+      if (matchingId != "") {
+        this.emit("deleted", matchingId);
+      }
+    });
+
+    this.remote.on("updated", async (todo) => {
+      let matchingId = "";
+
+      this.idmapper.forEach((remoteId, localId) => {
+        if (todo.id == remoteId) {
+          matchingId = localId;
+        }
+      });
+
+      if (matchingId != "") {
+        this.emit("updated", { ...todo, id: matchingId });
       }
     });
   }
@@ -60,9 +77,24 @@ export class TodosServiceConnectorImpl extends EventEmitter
   }
 
   async delete(id: TodoLocal["id"]) {
+    // TODO: Wait until this.idmapper.get(id) != id
+    setTimeout(async () => {
+      await this.remote.delete(this.idmapper.get(id));
+
+      this.idmapper.delete(id);
+    }, 500); // Mock latency of RPC
+  }
+
+  async update(todo: TodoLocal) {
+    // TODO: Wait until this.idmapper.get(id) != id
     setTimeout(
-      async () => await this.remote.delete(this.idmapper.get(id)),
+      async () =>
+        await this.remote.update({ ...todo, id: this.idmapper.get(todo.id) }),
       500
     ); // Mock latency of RPC
+  }
+
+  async setId(localId: string, remoteId: string) {
+    this.idmapper.set(localId, remoteId);
   }
 }

@@ -10,14 +10,14 @@ export interface TodoRemote extends TodoRemoteNew {
 }
 
 export interface TodosServiceRemote {
-  create(todo: TodoRemoteNew): TodoRemote;
+  create(todo: TodoRemoteNew): Promise<TodoRemote>;
 }
 
 @injectable()
 export class TodosServiceRemoteImpl implements TodosServiceRemote {
   private todos: TodoRemote[] = [];
 
-  create(todo: TodoRemoteNew): TodoRemote {
+  async create(todo: TodoRemoteNew) {
     const newTodo = { ...todo, id: v1() };
 
     this.todos.push(newTodo);

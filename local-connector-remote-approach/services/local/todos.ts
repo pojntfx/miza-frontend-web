@@ -11,7 +11,7 @@ export interface TodoLocal extends TodoLocalNew {
 }
 
 export interface TodosServiceLocal {
-  create(todo: TodoLocalNew): void;
+  create(todo: TodoLocalNew): Promise<void>;
 }
 
 @injectable()
@@ -22,11 +22,11 @@ export class TodosServiceLocalImpl implements TodosServiceLocal {
     @inject("TodosServiceConnector") private connector?: TodosServiceConnector
   ) {}
 
-  create(todo: TodoLocalNew) {
+  async create(todo: TodoLocalNew) {
     const newTodo = { ...todo, id: v4() };
 
     this.todos.push(newTodo);
 
-    this.connector.create(newTodo);
+    await this.connector.create(newTodo);
   }
 }

@@ -34,7 +34,9 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
     <div {...props}>
       <button
         onClick={() =>
-          todosService.create({ title: new Date().toLocaleString() })
+          todosService.create({
+            title: `Created from view at ${new Date().toLocaleString()}`,
+          })
         }
       >
         Create todo
@@ -47,12 +49,14 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
         onClick={() =>
           todosService.update({
             ...todos[todos.length - 1],
-            title: new Date().toLocaleString(),
+            title: `Update from view at ${new Date().toLocaleString()}`,
           })
         }
       >
         Update last todo
       </button>
+
+      <div>Todo count: {todos.length}</div>
 
       <ul>
         {todos.map((todo) => (

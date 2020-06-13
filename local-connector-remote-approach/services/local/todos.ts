@@ -86,14 +86,20 @@ export class TodosServiceLocalImpl extends EventEmitter
   private async updateInternal(todo: TodoLocal) {
     const todoToUpdate = this.todos.find((oldTodo) => oldTodo.id == todo.id);
 
-    if (todo.title) todoToUpdate.title = todo.title;
+    if (todoToUpdate) {
+      if (todo.title) todoToUpdate.title = todo.title;
 
-    this.todos = this.todos.map((oldTodo) =>
-      oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo
-    );
+      this.todos = this.todos.map((oldTodo) =>
+        oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo
+      );
 
-    this.emit("updated", todoToUpdate);
+      this.emit("updated", todoToUpdate);
 
-    return todoToUpdate;
+      return todoToUpdate;
+    } else {
+      throw new Error(
+        `Todo ${todo.id} does not exist; it has probably been deleted in the time between you started the update request and now`
+      );
+    }
   }
 }

@@ -13,7 +13,9 @@ export interface TodoLocal extends TodoLocalNew {
 
 export interface TodosServiceLocal extends EventEmitter {
   create(todo: TodoLocalNew): Promise<void>;
+  delete(id: TodoLocal["id"]): Promise<void>;
   on(event: "created", listener: (todo: TodoLocal) => void): this;
+  on(event: "deleted", listener: (id: TodoLocal["id"]) => void): this;
 }
 
 @injectable()
@@ -41,5 +43,15 @@ export class TodosServiceLocalImpl extends EventEmitter
     this.emit("created", newTodo);
 
     await this.connector.create(newTodo);
+  }
+
+  async delete(id: TodoLocal["id"]) {
+    const todoToDelete = this.todos.find((todo) => todo.id == id);
+
+    this.todos = this.todos.filter((todo) => todo.id != todoToDelete.id);
+
+    this.emit("deleted", todoToDelete.id);
+
+    await this.connector.delete(todoToDelete.id);
   }
 }

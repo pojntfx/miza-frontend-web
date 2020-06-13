@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { App } from "./neo-local-first/App";
+import "reflect-metadata";
+import { TodoView } from "./local-connector-remote-approach/TodoView";
+// import { App } from "./neo-local-first/App";
 // import App from "./src/components/App";
 // import { App } from "./neo/App";
 
@@ -12,4 +14,4 @@ import { App } from "./neo-local-first/App";
 //   document.getElementById("root")
 // );
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<TodoView />, document.getElementById("root"));

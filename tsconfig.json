@@ -2,6 +2,8 @@
   "compilerOptions": {
     "jsx": "react",
     "lib": ["ES2020", "DOM"],
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

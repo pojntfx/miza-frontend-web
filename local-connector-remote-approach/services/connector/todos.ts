@@ -3,7 +3,7 @@ import { injectable, inject } from "tsyringe";
 import { TodosServiceRemote } from "../remote/todos";
 
 export interface TodosServiceConnector {
-  create(todo: TodoLocal): void;
+  create(todo: TodoLocal): Promise<void>;
 }
 
 @injectable()
@@ -14,11 +14,11 @@ export class TodosServiceConnectorImpl implements TodosServiceConnector {
     @inject("TodosServiceRemote") private remote?: TodosServiceRemote
   ) {}
 
-  create(todo: TodoLocal): void {
+  async create(todo: TodoLocal) {
     this.idmapper.set(todo.id, todo.id);
 
-    setTimeout(() => {
-      const remoteTodo = this.remote.create({ title: todo.title });
+    setTimeout(async () => {
+      const remoteTodo = await this.remote.create({ title: todo.title });
 
       this.idmapper.set(todo.id, remoteTodo.id);
     }, 100);

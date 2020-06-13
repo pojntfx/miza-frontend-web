@@ -23,6 +23,32 @@ export class TodosServiceRemoteImpl extends EventEmitter
   implements TodosServiceRemote {
   private todos: TodoRemote[] = [];
 
+  constructor() {
+    super();
+
+    setInterval(
+      async () =>
+        await this.create({
+          title: `Created from remote at ${new Date().toLocaleString()}`,
+        }),
+      250
+    );
+
+    setInterval(
+      async () => await this.delete(this.todos[this.todos.length - 1].id),
+      500
+    );
+
+    setInterval(
+      async () =>
+        await this.update({
+          ...this.todos[this.todos.length - 1],
+          title: `Updated from remote at ${new Date().toLocaleString()}`,
+        }),
+      750
+    );
+  }
+
   async create(todo: TodoRemoteNew) {
     const newTodo = { ...todo, id: new Date().getTime().toString() };
 
@@ -48,12 +74,18 @@ export class TodosServiceRemoteImpl extends EventEmitter
   async update(todo: TodoRemote) {
     const todoToUpdate = this.todos.find((oldTodo) => oldTodo.id == todo.id);
 
-    if (todo.title) todoToUpdate.title = todo.title;
+    if (todoToUpdate) {
+      if (todo.title) todoToUpdate.title = todo.title;
 
-    this.todos = this.todos.map((oldTodo) =>
-      oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo
-    );
+      this.todos = this.todos.map((oldTodo) =>
+        oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo
+      );
 
-    setTimeout(async () => this.emit("updated", todoToUpdate), 500); // Mock latency of message bus
+      setTimeout(async () => this.emit("updated", todoToUpdate), 500); // Mock latency of message bus
+    } else {
+      throw new Error(
+        `Todo ${todo.id} does not exist; it has probably been deleted in the time between you started the update request and now`
+      );
+    }
   }
 }

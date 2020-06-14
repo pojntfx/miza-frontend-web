@@ -41,6 +41,7 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
       >
         Create todo
       </button>
+
       <button onClick={() => todosService.delete(todos[todos.length - 1].id)}>
         Delete last todo
       </button>
@@ -54,6 +55,14 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
         }
       >
         Update last todo
+      </button>
+
+      <button onClick={() => todosService.reorder(todos[0].id, -1)}>
+        Reorder first todo backwards
+      </button>
+
+      <button onClick={() => todosService.reorder(todos[0].id, 1)}>
+        Reorder first todo forwards
       </button>
 
       <div>Todo count: {todos.length}</div>

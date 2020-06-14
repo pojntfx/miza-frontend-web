@@ -14,6 +14,7 @@ export interface TodosServiceRemote extends EventEmitter {
   create(todo: TodoRemoteNew): Promise<TodoRemote>;
   delete(id: TodoRemote["id"]): Promise<void>;
   update(todo: TodoRemote): Promise<void>;
+  reorder(id: TodoRemote["id"], offset: number): Promise<void>;
   on(event: "created", listener: (todo: TodoRemote) => void): this;
   on(event: "deleted", listener: (id: TodoRemote["id"]) => void): this;
   on(event: "updated", listener: (todo: TodoRemote) => void): this;
@@ -48,6 +49,8 @@ export class TodosServiceRemoteImpl extends EventEmitter
         }),
       750
     );
+
+    setInterval(async () => await this.reorder(this.todos[0].id, 1), 1000);
   }
 
   async create(todo: TodoRemoteNew) {
@@ -116,6 +119,38 @@ export class TodosServiceRemoteImpl extends EventEmitter
     } else {
       throw new Error(
         `Todo ${todo.id} does not exist; it has probably been deleted in the time between you started the update request and now`
+      );
+    }
+  }
+
+  async reorder(id: TodoRemote["id"], offset: number) {
+    const todoToReorder = this.todos.find((e) => e.id == id);
+    const newIndex = todoToReorder.index + offset;
+
+    if (todoToReorder) {
+      const updatedTodos = this.todos
+        .filter((t) =>
+          offset > 0
+            ? t.index >= todoToReorder.index && t.index <= newIndex
+            : t.index <= todoToReorder.index && t.index >= newIndex
+        )
+        .map((t) => ({
+          ...t,
+          index: offset > 0 ? t.index - 1 : t.index + 1,
+        }))
+        .map((t) => (t.id == id ? { ...t, index: newIndex } : t));
+
+      this.todos = this.todos.map(
+        (t) => updatedTodos.find((u) => u.id == t.id) || t
+      );
+
+      updatedTodos.forEach(
+        (todoToUpdate) =>
+          setTimeout(async () => this.emit("updated", todoToUpdate), 500) // Mock latency of message bus
+      );
+    } else {
+      throw new Error(
+        `Todo ${id} does not exist; it has probably been deleted in the time between you started the reorder request and now`
       );
     }
   }

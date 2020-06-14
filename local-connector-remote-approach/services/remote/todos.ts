@@ -7,6 +7,7 @@ export interface TodoRemoteNew {
 
 export interface TodoRemote extends TodoRemoteNew {
   id: string;
+  index: number;
 }
 
 export interface TodosServiceRemote extends EventEmitter {
@@ -50,7 +51,11 @@ export class TodosServiceRemoteImpl extends EventEmitter
   }
 
   async create(todo: TodoRemoteNew) {
-    const newTodo = { ...todo, id: new Date().getTime().toString() };
+    const newTodo = {
+      ...todo,
+      id: new Date().getTime().toString(),
+      index: this.todos.length + 1,
+    };
 
     this.todos.push(newTodo);
 
@@ -69,6 +74,8 @@ export class TodosServiceRemoteImpl extends EventEmitter
     console.log("Remote todos", this.todos);
 
     setTimeout(async () => this.emit("deleted", todoToDelete.id), 500); // Mock latency of message bus
+
+    // TODO: Recalculate indexes for todos with index > todoToDelete.index and emit update events
   }
 
   async update(todo: TodoRemote) {

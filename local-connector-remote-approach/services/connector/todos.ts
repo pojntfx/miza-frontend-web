@@ -24,16 +24,18 @@ export class TodosServiceConnectorImpl extends EventEmitter
     super();
 
     this.remote.on("created", async (todo) => {
-      let exists = false;
+      let matchingId = "";
 
-      this.idmapper.forEach((remoteId) => {
+      this.idmapper.forEach((remoteId, localId) => {
         if (todo.id == remoteId) {
-          exists = true;
+          matchingId = localId;
         }
       });
 
-      if (!exists) {
+      if (matchingId == "") {
         this.emit("created", { id: todo.id, title: todo.title });
+      } else {
+        this.emit("updated", { ...todo, id: matchingId });
       }
     });
 

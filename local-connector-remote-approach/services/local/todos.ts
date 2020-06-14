@@ -9,6 +9,7 @@ export interface TodoLocalNew {
 
 export interface TodoLocal extends TodoLocalNew {
   id: string;
+  index: number;
 }
 
 export interface TodosServiceLocal extends EventEmitter {
@@ -64,7 +65,7 @@ export class TodosServiceLocalImpl extends EventEmitter
   }
 
   private async createInternal(todo: TodoLocalNew, skipEmit?: boolean) {
-    const newTodo = { ...todo, id: v4() };
+    const newTodo = { ...todo, id: v4(), index: this.todos.length + 1 };
 
     this.todos.push(newTodo);
 
@@ -80,6 +81,8 @@ export class TodosServiceLocalImpl extends EventEmitter
 
     this.emit("deleted", todoToDelete.id);
 
+    // TODO: Recalculate indexes for todos with index > todoToDelete.index and emit update events
+
     return todoToDelete;
   }
 
@@ -88,6 +91,7 @@ export class TodosServiceLocalImpl extends EventEmitter
 
     if (todoToUpdate) {
       if (todo.title) todoToUpdate.title = todo.title;
+      if (todo.index) todoToUpdate.index = todo.index;
 
       this.todos = this.todos.map((oldTodo) =>
         oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo

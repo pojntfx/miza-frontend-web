@@ -59,9 +59,11 @@ export const TodoView: React.FC<ITodoViewProps> = (props) => {
       <div>Todo count: {todos.length}</div>
 
       <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{JSON.stringify(todo)}</li>
-        ))}
+        {todos
+          .sort((a, b) => a.index - b.index)
+          .map((todo) => (
+            <li key={todo.id}>{JSON.stringify(todo)}</li>
+          ))}
       </ul>
     </div>
   );

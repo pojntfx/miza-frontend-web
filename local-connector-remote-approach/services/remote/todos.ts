@@ -63,6 +63,16 @@ export class TodosServiceRemoteImpl extends EventEmitter
 
     setTimeout(async () => this.emit("created", newTodo), 500); // Mock latency of message bus
 
+    // Send update events for todos which have been added in the meantime
+    {
+      this.todos
+        .filter((t) => t.index >= newTodo.index)
+        .forEach(
+          (todoToUpdate) =>
+            setTimeout(async () => this.emit("updated", todoToUpdate), 500) // Mock latency of message bus
+        );
+    }
+
     return newTodo;
   }
 
@@ -75,7 +85,21 @@ export class TodosServiceRemoteImpl extends EventEmitter
 
     setTimeout(async () => this.emit("deleted", todoToDelete.id), 500); // Mock latency of message bus
 
-    // TODO: Recalculate indexes for todos with index > todoToDelete.index and emit update events
+    // Recalculate indexes for todos with an index that is higher than the current one
+    {
+      const updatedTodos = this.todos
+        .filter((t) => t.index >= todoToDelete.index)
+        .map((t) => ({ ...t, index: t.index - 1 }));
+
+      this.todos = this.todos.map(
+        (t) => updatedTodos.find((u) => u.id == t.id) || t
+      );
+
+      updatedTodos.forEach(
+        (todoToUpdate) =>
+          setTimeout(async () => this.emit("updated", todoToUpdate), 500) // Mock latency of message bus
+      );
+    }
   }
 
   async update(todo: TodoRemote) {

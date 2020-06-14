@@ -81,7 +81,20 @@ export class TodosServiceLocalImpl extends EventEmitter
 
     this.emit("deleted", todoToDelete.id);
 
-    // TODO: Recalculate indexes for todos with index > todoToDelete.index and emit update events
+    // Recalculate indexes for todos with an index that is higher than the current one
+    {
+      const updatedTodos = this.todos
+        .filter((t) => t.index >= todoToDelete.index)
+        .map((t) => ({ ...t, index: t.index - 1 }));
+
+      this.todos = this.todos.map(
+        (t) => updatedTodos.find((u) => u.id == t.id) || t
+      );
+
+      updatedTodos.forEach((todoToUpdate) =>
+        setTimeout(async () => this.emit("updated", todoToUpdate), 0)
+      );
+    }
 
     return todoToDelete;
   }

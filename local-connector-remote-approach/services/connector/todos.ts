@@ -77,7 +77,8 @@ export class TodosServiceConnectorImpl extends EventEmitter
   }
 
   async delete(id: TodoLocal["id"]) {
-    // TODO: Wait until this.idmapper.get(id) != id
+    await this.waitUntilRemoteCreated(id);
+
     setTimeout(async () => {
       await this.remote.delete(this.idmapper.get(id));
 
@@ -86,7 +87,8 @@ export class TodosServiceConnectorImpl extends EventEmitter
   }
 
   async update(todo: TodoLocal) {
-    // TODO: Wait until this.idmapper.get(id) != id
+    await this.waitUntilRemoteCreated(todo.id);
+
     setTimeout(
       async () =>
         await this.remote.update({ ...todo, id: this.idmapper.get(todo.id) }),
@@ -96,5 +98,11 @@ export class TodosServiceConnectorImpl extends EventEmitter
 
   async setId(localId: string, remoteId: string) {
     this.idmapper.set(localId, remoteId);
+  }
+
+  private async waitUntilRemoteCreated(id: TodoLocal["id"]) {
+    while (this.idmapper.get(id) == id) {
+      await new Promise((res) => setTimeout(() => res(), 500));
+    }
   }
 }

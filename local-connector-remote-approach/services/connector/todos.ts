@@ -73,7 +73,7 @@ export class TodosServiceConnectorImpl extends EventEmitter
     this.idmapper.set(todo.id, todo.id);
 
     setTimeout(async () => {
-      const remoteTodo = await this.remote.create({ title: todo.title });
+      const remoteTodo = await this.remote.create(todo);
 
       this.idmapper.set(todo.id, remoteTodo.id);
     }, 500); // Mock latency of RPC

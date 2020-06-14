@@ -3,6 +3,7 @@ import { EventEmitter } from "events";
 
 export interface TodoRemoteNew {
   title: string;
+  body: string;
 }
 
 export interface TodoRemote extends TodoRemoteNew {
@@ -31,7 +32,8 @@ export class TodosServiceRemoteImpl extends EventEmitter
     setInterval(
       async () =>
         await this.create({
-          title: `Created from remote at ${new Date().toLocaleString()}`,
+          title: `Title created from remote at ${new Date().toLocaleString()}`,
+          body: `Body created from remote at ${new Date().toLocaleString()}`,
         }),
       250
     );
@@ -45,7 +47,7 @@ export class TodosServiceRemoteImpl extends EventEmitter
       async () =>
         await this.update({
           ...this.todos[this.todos.length - 1],
-          title: `Updated from remote at ${new Date().toLocaleString()}`,
+          title: `Title updated from remote at ${new Date().toLocaleString()}`,
         }),
       750
     );
@@ -110,6 +112,7 @@ export class TodosServiceRemoteImpl extends EventEmitter
 
     if (todoToUpdate) {
       if (todo.title) todoToUpdate.title = todo.title;
+      if (todo.body) todoToUpdate.body = todo.body;
 
       this.todos = this.todos.map((oldTodo) =>
         oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo

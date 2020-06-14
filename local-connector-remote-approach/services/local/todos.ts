@@ -5,6 +5,7 @@ import { EventEmitter } from "events";
 
 export interface TodoLocalNew {
   title: string;
+  body: string;
 }
 
 export interface TodoLocal extends TodoLocalNew {
@@ -66,7 +67,7 @@ export class TodosServiceLocalImpl extends EventEmitter
   }
 
   async reorder(id: TodoLocal["id"], offset: number) {
-    const todoReorder = await this.reorderInternal(id, offset); // Don't overwrite the index, use reorder instead
+    const todoReorder = await this.reorderInternal(id, offset);
 
     await this.connector.reorder(todoReorder.id, todoReorder.offset);
   }
@@ -111,7 +112,8 @@ export class TodosServiceLocalImpl extends EventEmitter
 
     if (todoToUpdate) {
       if (todo.title) todoToUpdate.title = todo.title;
-      if (todo.index) todoToUpdate.index = todo.index;
+      if (todo.body) todoToUpdate.body = todo.body;
+      if (todo.index) todoToUpdate.index = todo.index; // This is only being used for remote updates, for local ones reorder is used
 
       this.todos = this.todos.map((oldTodo) =>
         oldTodo.id == todoToUpdate.id ? todoToUpdate : oldTodo

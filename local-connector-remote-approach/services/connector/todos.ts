@@ -7,6 +7,7 @@ export interface TodosServiceConnector extends EventEmitter {
   create(todo: TodoLocal): Promise<void>;
   delete(id: TodoLocal["id"]): Promise<void>;
   update(todo: TodoLocal): Promise<void>;
+  reorder(id: TodoLocal["id"], offset: number): Promise<void>;
   on(event: "created", listener: (todo: TodoLocal) => void): this;
   on(event: "deleted", listener: (id: TodoLocal["id"]) => void): this;
   on(event: "updated", listener: (todo: TodoLocal) => void): this;
@@ -94,6 +95,15 @@ export class TodosServiceConnectorImpl extends EventEmitter
     setTimeout(
       async () =>
         await this.remote.update({ ...todo, id: this.idmapper.get(todo.id) }),
+      500
+    ); // Mock latency of RPC
+  }
+
+  async reorder(id: TodoLocal["id"], offset: number) {
+    await this.waitUntilRemoteCreated(id);
+
+    setTimeout(
+      async () => await this.remote.reorder(this.idmapper.get(id), offset),
       500
     ); // Mock latency of RPC
   }

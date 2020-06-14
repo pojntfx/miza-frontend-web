@@ -16,6 +16,7 @@ export interface TodosServiceLocal extends EventEmitter {
   create(todo: TodoLocalNew): Promise<void>;
   delete(id: TodoLocal["id"]): Promise<void>;
   update(todo: TodoLocal): Promise<void>;
+  reorder(id: TodoLocal["id"], offset: number): Promise<void>;
   on(event: "created", listener: (todo: TodoLocal) => void): this;
   on(event: "deleted", listener: (id: TodoLocal["id"]) => void): this;
   on(event: "updated", listener: (todo: TodoLocal) => void): this;
@@ -59,9 +60,15 @@ export class TodosServiceLocalImpl extends EventEmitter
   }
 
   async update(todo: TodoLocal) {
-    const todoToUpdate = await this.updateInternal(todo);
+    const todoToUpdate = await this.updateInternal({ ...todo, index: 0 }); // Don't overwrite the index, use reorder instead
 
     await this.connector.update(todoToUpdate);
+  }
+
+  async reorder(id: TodoLocal["id"], offset: number) {
+    const todoReorder = await this.reorderInternal(id, offset); // Don't overwrite the index, use reorder instead
+
+    await this.connector.reorder(todoReorder.id, todoReorder.offset);
   }
 
   private async createInternal(todo: TodoLocalNew, skipEmit?: boolean) {
@@ -116,6 +123,39 @@ export class TodosServiceLocalImpl extends EventEmitter
     } else {
       throw new Error(
         `Todo ${todo.id} does not exist; it has probably been deleted in the time between you started the update request and now`
+      );
+    }
+  }
+
+  private async reorderInternal(id: TodoLocal["id"], offset: number) {
+    const todoToReorder = this.todos.find((e) => e.id == id);
+    const newIndex = todoToReorder.index + offset;
+
+    if (todoToReorder) {
+      const updatedTodos = this.todos
+        .filter((t) =>
+          offset > 0
+            ? t.index >= todoToReorder.index && t.index <= newIndex
+            : t.index <= todoToReorder.index && t.index >= newIndex
+        )
+        .map((t) => ({
+          ...t,
+          index: offset > 0 ? t.index - 1 : t.index + 1,
+        }))
+        .map((t) => (t.id == id ? { ...t, index: newIndex } : t));
+
+      this.todos = this.todos.map(
+        (t) => updatedTodos.find((u) => u.id == t.id) || t
+      );
+
+      updatedTodos.forEach((todoToUpdate) =>
+        setTimeout(async () => this.emit("updated", todoToUpdate), 0)
+      );
+
+      return { id, offset };
+    } else {
+      throw new Error(
+        `Todo ${id} does not exist; it has probably been deleted in the time between you started the reorder request and now`
       );
     }
   }
